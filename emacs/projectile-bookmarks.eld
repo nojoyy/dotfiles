@@ -1,1 +1,0 @@
-("~/.dotfiles/" "~/documents/rustybit/" "~/.config/fish/" "~/documents/deno_tests/" "~/documents/flipper_zero/Flipper/" "~/documents/KLIPPER_E3S1_LCD/" "~/documents/rust_projects/")

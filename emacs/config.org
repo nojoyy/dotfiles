@@ -36,6 +36,7 @@
   - [[#diminish-org-indent][Diminish Org Indent]]
   - [[#auto-tangle][Auto Tangle]]
   - [[#org-roam][ORG ROAM]]
+  - [[#publish-to-html][Publish to HTML]]
 - [[#theming][THEMING]]
   - [[#install-doom-themes-and-load-custom-theme][Install Doom Themes and Load Custom Theme]]
   - [[#transparency][TRANSPARENCY]]
@@ -499,6 +500,32 @@ python-pylint for python support
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
 #+end_src
+
+** Publish to HTML
+#+begin_src emacs-lisp
+(use-package ox-publish
+  :config
+  (setq org-publish-project-alist
+    '(
+("org-notes"
+ :base-directory "~/.config/fish/"
+ :base-extension "org"
+ :publishing-directory "~/public_html/"
+ :recursive t
+ :publishing-function org-html-publish-to-html
+ :headline-levels 4             ; Just the default for this project.
+ :auto-preamble t
+ )
+("org-static"
+ :base-directory "~/org/"
+ :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+ :publishing-directory "~/public_html/"
+ :recursive t
+ :publishing-function org-publish-attachment
+ )
+      ("org" :components ("org-notes" "org-static"))
+    ))
+
 
 
 * THEMING

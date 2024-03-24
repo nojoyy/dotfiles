@@ -1,5 +1,13 @@
 emacs/auto-save-list
-emacs/org-roam.db
 emacs/config.org~
+emacs/config.el~
+emacs/init.el~
 emacs/.org-id-locations
+emacs/org-roam.db
+emacs/bookmarks
+emacs/projectile-bookmarks.eld
+emacs/recentf
+emacs/tramp
+emacs/request
+emacs/url
 fish/splash.txt
