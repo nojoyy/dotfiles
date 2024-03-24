@@ -1,0 +1,6 @@
+/sudo:root@localhost:/etc/sudoers
+/tmp/#!sudo:root@localhost:!etc!sudoers#
+/home/noah/.config/setup/setup.org
+/home/noah/.config/setup/#setup.org#
+/home/noah/.config/setup/test.sh
+/home/noah/.config/setup/#test.sh#
