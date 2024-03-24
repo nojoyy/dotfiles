@@ -1,0 +1,11 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("org-capture-last-stored"
+ (filename . "~/org-roam/20231130013232-haskala.org")
+ (front-context-string . "A movement in th")
+ (rear-context-string . "+title: Haskala\n")
+ (position . 85)
+ (last-modified 25960 12053 846375 974000))
+)
