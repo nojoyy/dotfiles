@@ -1,1 +1,0 @@
-/home/noah/.config/emacs/elpaca/repos/emacsql/emacsql-sqlite.el
