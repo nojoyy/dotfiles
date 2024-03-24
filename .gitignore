@@ -10,4 +10,5 @@ emacs/recentf
 emacs/tramp
 emacs/request
 emacs/url
+emacs/elpaca
 fish/splash.txt
