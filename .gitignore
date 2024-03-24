@@ -11,4 +11,5 @@ emacs/tramp
 emacs/request
 emacs/url
 emacs/elpaca
+emacs/elpa
 fish/splash.txt
