@@ -5,7 +5,6 @@
 #+OPTIONS: toc:2
 #+PROPERTY: header-args :tangle config.fish
 
-
 * PATH
 ** Adding Deno to Path
 #+begin_src sh
@@ -100,9 +99,10 @@ end
 #+end_src
 
 * Customization
-** Greeting
+** Greetings
+*** Figlet Greeting
 #+begin_src sh
-function fish_greeting
+function figlet_greeting
   set line (random_index (wc -l < $CFD/splash.txt)) # gets random index based off number of lines in file - < pipes the buffer from the file into the command
   set splash (sed -n $line'p' $CFD/splash.txt) # sed copies said random index from the splash file
 
@@ -118,6 +118,18 @@ function fish_greeting
   set font $fonts[$font_i]
 
   figlet -cp -f $font $splash # uses figlet to output ascii text version
+end
+#+end_src
+*** Neofetch Greeting
+#+begin_src sh
+function neofetch_greeting
+  neofetch
+end
+#+end_src
+** Base Greeting
+#+begin_src sh
+function fish_greeting
+  neofetch_greeting
 end
 #+end_src
 

@@ -67,7 +67,7 @@ function random_color
   echo $colors[$i]
 end
 
-function fish_greeting
+function figlet_greeting
   set line (random_index (wc -l < $CFD/splash.txt)) # gets random index based off number of lines in file - < pipes the buffer from the file into the command
   set splash (sed -n $line'p' $CFD/splash.txt) # sed copies said random index from the splash file
 
@@ -83,6 +83,14 @@ function fish_greeting
   set font $fonts[$font_i]
 
   figlet -cp -f $font $splash # uses figlet to output ascii text version
+end
+
+function neofetch_greeting
+  neofetch
+end
+
+function fish_greeting
+  neofetch_greeting
 end
 
 zoxide init fish | source

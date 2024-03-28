@@ -12,4 +12,5 @@ emacs/request
 emacs/url
 emacs/elpaca
 emacs/elpa
+emacs/backups
 fish/splash.txt

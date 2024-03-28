@@ -1,50 +1,15 @@
-(defvar elpaca-installer-version 0.7)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
-                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                 ,@(when-let ((depth (plist-get order :depth)))
-                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                 ,(plist-get order :repo) ,repo))))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-;; Install use-package support
-(elpaca elpaca-use-package
-;; Enable use-package :ensure support for Elpaca.
-(elpaca-use-package-mode))
-;; Assume :elpaca t unless otherwise specified
-(setq use-package-always-ensure t)
+(add-to-list 'load-path "~/.config/emacs/scripts")
+(add-to-list 'load-path "~/.config/emacs/plugins")
 
-;; Block until current queue processed.
-(elpaca-wait)
+(require 'elpaca-setup)
+
+(require 'buffer-move)
+(require 'line-move)
+
+(setq backup-directory-alist
+  `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+  `((".*" ,temporary-file-directory t)))
 
 ;; use evil (vim emulator)
 ;; Expands to: (elpaca evil (use-package evil :demand t))
@@ -119,7 +84,12 @@
   "h f" '(describe-function :wk "describe function")
   "h v" '(describe-variable :wk "describe variable")
   "h l c" '(reload-init-file :wk "load emacs config")
-  "h l t" '(load-theme :wk "load theme"))
+  "h l t" '(load-theme :wk "load theme")
+  "h r" '(:ignore :wk "reload")
+  "h r r" '((lambda () (interactive)
+	     (load-file "~/.config/emacs/init.el")
+	     (ignore (eplaca-process-queues))
+	   :wk "reload emacs config")))
 
 ;; toggle keybinds
 (dt/leader-keys
@@ -163,14 +133,14 @@
   "s t" '(server-mode :wk "server toggle"))
 )
 
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-  (load-file user-init-file)
-)
+;;use all-the-icons package
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
 
-(add-to-list 'load-path "~/.config/emacs/plugins/")
-(load "buffer-move.el")
+;;use ati for dired (file manager)
+(use-package all-the-icons-dired
+  :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 
 (use-package dashboard
   :ensure t 
@@ -193,21 +163,6 @@
   :config
   (dashboard-setup-startup-hook))
 
-;;disable menu bar
-(menu-bar-mode -1)
-
-;;disable tool bar
-(tool-bar-mode -1)
-
-;;disable startup screen
-(setq inhibit-startup-screen t)  
-
-;;display line numbers by default
-(global-display-line-numbers-mode)
-
-;;display truncated lines by default
-(global-visual-line-mode t)
-
 ;;create font default
 (set-face-attribute 'default nil
   :font "Source Code Pro"
@@ -228,27 +183,33 @@
 ;;set line spacing
 (setq-default line-spacing 0.12)
 
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
   :diminish
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+;;disable menu bar
+(menu-bar-mode -1)
 
-;;use all-the-icons package
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
+;;disable tool bar
+(tool-bar-mode -1)
 
-;;use ati for dired (file manager)
-(use-package all-the-icons-dired
-  :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+;;disable startup screen
+(setq inhibit-startup-screen t)  
+
+;;display line numbers by default
+(global-display-line-numbers-mode)
+
+;;display truncated lines by default
+(global-visual-line-mode t)
+
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
 ;;use counsel with ivy (dependency)
 (use-package counsel

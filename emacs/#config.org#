@@ -66,9 +66,9 @@
 Set default Emacs backup directory - temp directory
 #+begin_src emacs-lisp
 (setq backup-directory-alist
-  `((".*" . ,temporary-file-directory)))
+  '((".*" . ,"/tmp/emacs")))
 (setq auto-save-file-name-transforms
-  `((".*" ,temporary-file-directory t)))
+  '((".*" ,"/tmp/emacs" t)))
 #+end_src
 
 * EVIL MODE

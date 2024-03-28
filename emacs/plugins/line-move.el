@@ -1,5 +1,12 @@
+;;; line-move.el ---
+
+;;; Commentary
+
+;; This code is to move lines via ALT + Arrow Keys
+
 ;; Taken from https://www.emacswiki.org/emacs/MoveLin
 
+;;; Code:
 
 (defun move-line (n)
   "Move the current line up or down by N lines."
@@ -36,3 +43,6 @@
 
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+
+(provide 'line-move)
+;;; line-move.el ends here

@@ -1,0 +1,54 @@
+font = "SourceCodePro"
+font-size=16
+hint-font=true
+
+text-color = #FFFFFF
+
+prompt-background = #000000
+prompt-background-padding = 0
+prompt-background-corner-radius = 0
+
+placeholder-color = #FFFFFFA8
+placeholder-background = #00000000
+placeholder-background-padding = 0
+placeholder-background-corner-radius = 0
+
+input-color = #FFFFFF
+input-background = #00000000
+input-background-padding = 0
+input-background-corner-radius = 0
+
+default-result-color = #FFFFFF
+default-result-background = #00000000
+default-result-background-padding = 0
+default-result-background-corner-radius = 0
+
+selection-color = #F92672
+selection-background = #00000000
+selection-background-padding = 0
+selection-background-corner-radius = 0
+
+# Matching portion of selection text
+selection-match-color = #00000000
+
+text-cursor-style = bar # bar, block, or underscore
+text-cursor-color=#FFFFFF
+text-cursor-background = #000000
+text-cursor-corner-radius = 0
+
+# text-cursor-thickness = 2
+
+anchor = top
+width = 100%
+height = 30
+horizontal = true
+prompt-text = " run: "
+outline-width = 0
+border-width = 0
+background-color = #000000
+min-input-width = 120
+result-spacing = 15
+padding-top = 0
+padding-bottom = 0
+padding-left = 0
+padding-right = 0

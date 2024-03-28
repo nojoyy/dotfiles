@@ -1,0 +1,89 @@
+#+TITLE:tofi Config
+#+AUTHOR:Noah Joyner
+#+DESCRIPTION:tofi Config to be used with Hyprland
+#+AUTO_TANGLE: t
+#+OPTONS: toc:2
+#+PROPERTY: header-args :tangle config
+
+* Font Setup
+#+begin_src sh
+font = "SourceCodePro"
+font-size=16
+hint-font=true
+#+end_src
+
+* Text Theming
+** Default Color
+#+begin_src sh
+text-color = #FFFFFF
+#+end_src
+** Prompt
+#+begin_src sh
+prompt-background = #000000
+prompt-background-padding = 0
+prompt-background-corner-radius = 0
+#+end_src
+** Placeholder
+#+begin_src sh
+placeholder-color = #FFFFFFA8
+placeholder-background = #00000000
+placeholder-background-padding = 0
+placeholder-background-corner-radius = 0
+#+end_src
+** Input Text
+#+begin_src sh
+input-color = #FFFFFF
+input-background = #00000000
+input-background-padding = 0
+input-background-corner-radius = 0
+#+end_src
+** Result Text
+#+begin_src sh
+default-result-color = #FFFFFF
+default-result-background = #00000000
+default-result-background-padding = 0
+default-result-background-corner-radius = 0
+#+end_src
+** Alternation
+#+begin_src
+alternate-result-color = #FFFFFF
+alternate-result-background = #00000000
+alternate-result-background-padding = 0
+alternate-result-background-corner-radius = 0
+#+end_src
+** Selection Text
+#+begin_src sh
+selection-color = #F92672
+selection-background = #00000000
+selection-background-padding = 0
+selection-background-corner-radius = 0
+
+# Matching portion of selection text
+selection-match-color = #00000000
+#+end_src
+** Cursor Theming
+#+begin_src sh
+text-cursor-style = bar # bar, block, or underscore
+text-cursor-color=#FFFFFF
+text-cursor-background = #000000
+text-cursor-corner-radius = 0
+
+# text-cursor-thickness = 2
+#+end_src
+* dmenu Theming
+#+begin_src sh
+anchor = top
+width = 100%
+height = 30
+horizontal = true
+prompt-text = " run: "
+outline-width = 0
+border-width = 0
+background-color = #000000
+min-input-width = 120
+result-spacing = 15
+padding-top = 0
+padding-bottom = 0
+padding-left = 0
+padding-right = 0
+#+end_src

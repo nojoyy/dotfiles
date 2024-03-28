@@ -1,0 +1,11 @@
+preload = /mnt/carbon/wg/contemplate.jpg
+preload = /mnt/carbon/wg/pom-frog.jpg
+preload = /mnt/carbon/wg/sole-room.jpg
+preload = /mnt/carbon/wg/walk.jpg
+
+wallpaper = monitor1,/mnt/carbon/wg/contemplate.jpg
+
+splash=true
+
+#disable ipc
+ipc = off
