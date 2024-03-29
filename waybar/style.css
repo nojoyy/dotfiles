@@ -1,0 +1,13 @@
+#waybar {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+#idle_inibitor.activated {
+  background-color: #285577;
+}
+
+*{
+  font-family: FiraCode; 
+  font-size: 16px;
+}

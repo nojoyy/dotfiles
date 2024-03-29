@@ -29,14 +29,15 @@
   - [[#projectile][Projectile]]
   - [[#sudo-edit][Sudo Edit]]
 - [[#org-mode][ORG MODE]]
-  - [[#tweaks-1][Tweaks]]
-  - [[#enabling-toc][Enabling ToC]]
-  - [[#enabling-bullets][Enabling Bullets]]
-  - [[#org-tempo][Org Tempo]]
-  - [[#disable-poor-indenting][Disable Poor Indenting]]
-  - [[#diminish-org-indent][Diminish Org Indent]]
+  - [[#appearance][Appearance]]
   - [[#auto-tangle][Auto Tangle]]
-  - [[#org-roam][ORG ROAM]]
+  - [[#diminish-org-indent][Diminish Org Indent]]
+  - [[#disable-poor-indenting][Disable Poor Indenting]]
+  - [[#enabling-bullets][Enabling Bullets]]
+  - [[#enabling-toc][Enabling ToC]]
+  - [[#org-tempo][Org Tempo]]
+  - [[#org-roam][Org Roam]]
+  - [[#tweaks-1][Tweaks]]
 - [[#theming][THEMING]]
   - [[#install-doom-themes-and-load-custom-theme][Install Doom Themes and Load Custom Theme]]
   - [[#transparency][TRANSPARENCY]]
@@ -70,6 +71,7 @@ Set default Emacs backup directory - temp directory
 (setq auto-save-file-name-transforms
   `((".*" ,temporary-file-directory t)))
 #+end_src
+
 
 * EVIL MODE
 #+begin_src emacs-lisp
@@ -242,9 +244,8 @@ Set default Emacs backup directory - temp directory
 #+begin_src emacs-lisp
 ;;create font default
 (set-face-attribute 'default nil
-  :font "Source Code Pro"
-  :height 120
-  :weight 'medium)
+  :font "FiraCode"
+  :weight 'Regular)
 
 ;;make comments italicized
 (set-face-attribute 'font-lock-comment-face nil
@@ -255,10 +256,10 @@ Set default Emacs backup directory - temp directory
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "Source Code Pro-12"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
 
 ;;set line spacing
-(setq-default line-spacing 0.12)
+(setq-default line-spacing 0.15)
 #+end_src
 
 ** Rainbow Delimiters
@@ -402,38 +403,11 @@ python-pylint for python support
 
 
 * ORG MODE
-** Tweaks
+** Appearance
 #+begin_src emacs-lisp
-(setq org-ellipsis " ⇁" 
-      org-hide-emphasis-markers t)
-#+end_src
-** Enabling ToC
-#+begin_src emacs-lisp
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-#+end_src
-
-** Enabling Bullets
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'org-indent-mode)
-(use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-#+end_src
-
-** Org Tempo
-#+begin_src emacs-lisp
-(require 'org-tempo) ;; quick blocks
-#+end_src
-
-** Disable Poor Indenting
-#+begin_src emacs-lisp
-(setq org-edit-src-content-indentation 0)
-#+end_src
-
-** Diminish Org Indent
-#+begin_src emacs-lisp
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
+  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
 #+end_src
 
 ** Auto Tangle
@@ -443,13 +417,48 @@ python-pylint for python support
   :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
-** ORG ROAM
+** Diminish Org Indent
+#+begin_src emacs-lisp
+(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+#+end_src
+
+** Disable Poor Indenting
+#+begin_src emacs-lisp
+(setq org-edit-src-content-indentation 0)
+#+end_src
+
+** Enabling Bullets
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'org-indent-mode)
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+
+** Enabling ToC
+#+begin_src emacs-lisp
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+#+end_src
+
+** Org Tempo
+#+begin_src emacs-lisp
+(require 'org-tempo) ;; quick blocks
+#+end_src
+
+** Org Roam
 #+begin_src emacs-lisp
 (use-package org-roam
   :config
   (setq org-roam-directory (file-truename "~/org-roam")
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
+#+end_src
+
+** Tweaks
+#+begin_src emacs-lisp
+(setq org-ellipsis " ⇁" 
+      org-hide-emphasis-markers t)
 #+end_src
 
 

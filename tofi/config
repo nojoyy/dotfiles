@@ -1,5 +1,5 @@
-font = "SourceCodePro"
-font-size=16
+font = "FiraCode"
+font-size=10
 hint-font=true
 
 text-color = #FFFFFF
@@ -47,8 +47,8 @@ outline-width = 0
 border-width = 0
 background-color = #000000
 min-input-width = 120
-result-spacing = 15
-padding-top = 0
+result-spacing = 16
+padding-top = 6
 padding-bottom = 0
 padding-left = 0
 padding-right = 0

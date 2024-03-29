@@ -165,9 +165,8 @@
 
 ;;create font default
 (set-face-attribute 'default nil
-  :font "Source Code Pro"
-  :height 120
-  :weight 'medium)
+  :font "FiraCode"
+  :weight 'Regular)
 
 ;;make comments italicized
 (set-face-attribute 'font-lock-comment-face nil
@@ -178,10 +177,10 @@
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "Source Code Pro-12"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
 
 ;;set line spacing
-(setq-default line-spacing 0.12)
+(setq-default line-spacing 0.15)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -281,32 +280,36 @@
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
 
-(setq org-ellipsis " ⇁" 
-      org-hide-emphasis-markers t)
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
+  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
 
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+
+(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+
+(setq org-edit-src-content-indentation 0)
 
 (add-hook 'org-mode-hook 'org-indent-mode)
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+
 (require 'org-tempo) ;; quick blocks
-
-(setq org-edit-src-content-indentation 0)
-
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-
-(use-package org-auto-tangle
-  :defer t
-  :hook (org-mode . org-auto-tangle-mode))
 
 (use-package org-roam
   :config
   (setq org-roam-directory (file-truename "~/org-roam")
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
+
+(setq org-ellipsis " ⇁" 
+      org-hide-emphasis-markers t)
 
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
 (use-package doom-themes
