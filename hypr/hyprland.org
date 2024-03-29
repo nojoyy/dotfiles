@@ -6,30 +6,29 @@
 
 * Setup
 ** Monitor Setup
-#+begin_src sh
+#+begin_src hypr
 monitor=,preferred,auto,auto
 #+end_src
 ** Set Default Programs
-#+begin_src sh
+#+begin_src hypr
 $terminal = kitty
 $fileManager = dolphin
 $menu = tofi-drun | xargs hyprctl dispatch exec --
 #+end_src
 ** Execute Startup Programs
 Run programs on startup like emacs server, application bar, and notification server
-#+begin_src sh
+#+begin_src hypr
 # Point to configs
 $dunst_config = ~/.config/dunst/dunst.conf
 
 # Execute
 exec-once = hyprpaper # wallpaper manager
 exec-once = waybar # application bar
-exec-once = emacs -daemon # emacs server
 exec-once = dunst # notification server
 exec-once = /user/libexec/polkit-kde-authentication-agent-1 # authentication layer
 #+end_src
 ** Input
-#+begin_src sh
+#+begin_src hypr
 input {
     kb_layout = us
     kb_variant =
@@ -50,12 +49,12 @@ input {
 * Style
 ** Set Env Variables
 Set cursor size and theme
-#+begin_src sh
+#+begin_src hypr
 env = XCURSOR_SIZE,24
 env = QT_QPA_PLATFORMTHEME,qt6ct
 #+end_src
 ** General Styling
-#+begin_src sh
+#+begin_src hypr
 general {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
@@ -72,7 +71,7 @@ general {
 }
 #+end_src
 ** Decoration
-#+begin_src sh
+#+begin_src hypr
 decoration {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
@@ -93,7 +92,7 @@ decoration {
 }
 #+end_src
 ** Animations
-#+begin_src sh
+#+begin_src hypr
 # Default Animation
 animations {
     enabled = true
@@ -111,7 +110,7 @@ animations {
 }
 #+end_src
 ** Dwindle
-#+begin_src sh
+#+begin_src hypr
 dwindle {
     # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
     pseudotile = true # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
@@ -119,21 +118,21 @@ dwindle {
 }
 #+end_src
 ** Master Layout
-#+begin_src sh
+#+begin_src hypr
 master {
     # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
     new_is_master = true
 }
 #+end_src
 ** Gestures
-#+begin_src sh
+#+begin_src hypr
 gestures {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
     workspace_swipe = false
 }
 #+end_src
 ** Misc
-#+begin_src sh
+#+begin_src hypr
 misc {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
     force_default_wallpaper = -1 # Set to 0 or 1 to disable the anime mascot wallpapers
@@ -142,7 +141,7 @@ misc {
 * Configuration
 ** Per Device Config
 See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
-#+begin_src sh
+#+begin_src hypr
 device {
     name = epic-mouse-v1
     sensitivity = -0.5
@@ -150,16 +149,16 @@ device {
 #+end_src
 ** Windowrules
 See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-#+begin_src sh
+#+begin_src hypr
 windowrulev2 = suppressevent maximize, class:.* # You'll probably like this.
 #+end_src
 * Keybinds
 ** Set MainMod
-#+begin_src sh
+#+begin_src hypr
 $mainMod = SUPER
 #+end_src
 ** Launch Applications
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, Q, exec, $terminal
 bind = $mainMod, F, exec, firefox
 bind = $mainMod, E, exec, $fileManager
@@ -169,25 +168,25 @@ bind = $mainMod, T, exec, emacsclient -nc
 bind = $mainMod, K, exec, keepassxc
 #+end_src
 ** Dwindle
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, P, pseudo, # dwindle
 bind = $mainMod, J, togglesplit, # dwindle
 #+end_src
 ** Control
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, C, killactive,
 bind = $mainMod, M, exit,
 bind = $mainMod, V, togglefloating,
 #+end_src
 ** Focus
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, left, movefocus, l
 bind = $mainMod, right, movefocus, r
 bind = $mainMod, up, movefocus, u
 bind = $mainMod, down, movefocus, d
 #+end_src
 ** Switch Workspaces
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, 1, workspace, 1
 bind = $mainMod, 2, workspace, 2
 bind = $mainMod, 3, workspace, 3
@@ -200,7 +199,7 @@ bind = $mainMod, 9, workspace, 9
 bind = $mainMod, 0, workspace, 10
 #+end_src
 ** Bring Window to Workspace
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2
 bind = $mainMod SHIFT, 3, movetoworkspace, 3
@@ -213,23 +212,23 @@ bind = $mainMod SHIFT, 9, movetoworkspace, 9
 bind = $mainMod SHIFT, 0, movetoworkspace, 10
 #+end_src
 ** Scratchpad
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, S, togglespecialworkspace, magic
 bind = $mainMod SHIFT, S, movetoworkspace, special:magic
 #+end_src
 ** Scroll Through Workspaces
-#+begin_src sh
+#+begin_src hypr
 bind = $mainMod, mouse_down, workspace, e+1
 bind = $mainMod, mouse_up, workspace, e-1
 #+end_src
 ** Resize Windows with Mouse
-#+begin_src sh
+#+begin_src hypr
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
 #+end_src
 
 * Hyprpaper
-#+begin_src sh :tangle hyprpaper.conf
+#+begin_src hypr :tangle hyprpaper.conf
 preload = ~/.config/hypr/wallpapers/contemplate.jpg
 preload = ~/.config/hypr/wallpapers/pom-frog.jpg
 preload = ~/.config/hypr/wallpapers/sole-room.jpg

@@ -8,7 +8,7 @@
   - [[#adding-scripts-and-plugins][Adding Scripts and Plugins]]
   - [[#package-manager][Package Manager]]
   - [[#plugins][Plugins]]
-- [[#backup][BACKUP]]
+- [[#set-backup-dir][SET BACKUP DIR]]
 - [[#evil-mode][EVIL MODE]]
 - [[#general-keybinds][GENERAL KEYBINDS]]
 - [[#gui][GUI]]
@@ -28,6 +28,7 @@
   - [[#diminsh][Diminsh]]
   - [[#projectile][Projectile]]
   - [[#sudo-edit][Sudo Edit]]
+  - [[#which-key][Which-Key]]
 - [[#org-mode][ORG MODE]]
   - [[#appearance][Appearance]]
   - [[#auto-tangle][Auto Tangle]]
@@ -40,11 +41,10 @@
   - [[#tweaks-1][Tweaks]]
 - [[#theming][THEMING]]
   - [[#install-doom-themes-and-load-custom-theme][Install Doom Themes and Load Custom Theme]]
-  - [[#transparency][TRANSPARENCY]]
+  - [[#transparency][Transparency]]
 - [[#v-term][V-TERM]]
-  - [[#use-v-term][Use V-Term]]
+  - [[#enable][Enable]]
   - [[#v-term-toggle][V-Term Toggle]]
-- [[#which-key][WHICH-KEY]]
 
 * LOADING SCRIPTS 
 ** Adding Scripts and Plugins
@@ -63,7 +63,7 @@
 #+end_src
 
 
-* BACKUP
+* SET BACKUP DIR
 Set default Emacs backup directory - temp directory
 #+begin_src emacs-lisp
 (setq backup-directory-alist
@@ -401,6 +401,29 @@ python-pylint for python support
     "s ." '(sudo-edit :wk "sudo edit current file")))
 #+end_src
 
+** Which-Key
+Custom tooltips for custom commands
+#+begin_src emacs-lisp
+;; use which key (tooltips)
+(use-package which-key
+  :diminish
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+	  which-key-sort-uppercase-first nil
+	  which-key-add-column-padding 1
+	  which-key-max-display-columns nil
+	  which-key-min-display-lines 6
+	  which-key-side-window-slot -10
+	  which-key-side-window-max-height 0.25
+	  which-key-idle-delay 0.8
+	  which-key-max-description-length 25
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-separator "  ->  " ))
+#+end_src
+
 
 * ORG MODE
 ** Appearance
@@ -477,7 +500,7 @@ https://mswift42.github.io/themecreator/
 )
 #+end_src
 
-** TRANSPARENCY
+** Transparency
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(alpha-background . 95))
 #+end_src
@@ -485,7 +508,7 @@ https://mswift42.github.io/themecreator/
 
 * V-TERM
 Terminal Emulator
-** Use V-Term
+** Enable
 #+begin_src emacs-lisp
   ;;use vterm
   (use-package vterm
@@ -521,25 +544,3 @@ Terminal Emulator
 #+end_src
 
 
-* WHICH-KEY
-Custom tooltips for custom commands
-#+begin_src emacs-lisp
-;; use which key (tooltips)
-(use-package which-key
-  :diminish
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-side-window-location 'bottom
-        which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
-	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit nil
-	  which-key-separator "  ->  " ))
-#+end_src
