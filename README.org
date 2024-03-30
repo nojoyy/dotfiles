@@ -1,0 +1,18 @@
+#+TITLE: Person Dotfiles
+#+AUTHOR: Noah Joyner
+#+DESCRIPTION: My personal dotfiles for emacs, hyprland, fish, and more
+
+Welcome to my personal dotfiles, here is a programs you will need to use everything:
+
+- emacs
+- fish
+- neofetch
+- kitty
+- hyprland
+- hyprpaper
+- waybar
+- tofi
+- dunst
+- lib-notify
+- zoxide
+
