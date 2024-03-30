@@ -13,4 +13,6 @@ emacs/url
 emacs/elpaca
 emacs/elpa
 emacs/backups
+hypr/monitors.conf
+hypr/hyprpaper.conf
 fish/splash.txt

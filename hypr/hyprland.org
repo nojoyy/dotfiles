@@ -6,14 +6,16 @@
 
 * Setup
 ** Monitor Setup
+Source external platform dependent settings
 #+begin_src hypr
-monitor=,preferred,auto,auto
+source = ~/.config/hypr/monitors.conf
 #+end_src
 ** Set Default Programs
 #+begin_src hypr
 $terminal = kitty
 $fileManager = dolphin
 $menu = tofi-drun | xargs hyprctl dispatch exec --
+$runner = tofi-run
 #+end_src
 ** Execute Startup Programs
 Run programs on startup like emacs server, application bar, and notification server
@@ -163,6 +165,7 @@ bind = $mainMod, Q, exec, $terminal
 bind = $mainMod, F, exec, firefox
 bind = $mainMod, E, exec, $fileManager
 bind = $mainMod, R, exec, $menu
+bind = $mainMod CTRL, R, exec, $runner
 bind = $mainMod SHIFT, R, exec, sudo $menu
 bind = $mainMod, T, exec, emacsclient -nc
 bind = $mainMod, K, exec, keepassxc
@@ -225,21 +228,4 @@ bind = $mainMod, mouse_up, workspace, e-1
 #+begin_src hypr
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
-#+end_src
-
-* Hyprpaper
-#+begin_src hypr :tangle hyprpaper.conf
-preload = ~/.config/hypr/wallpapers/contemplate.jpg
-preload = ~/.config/hypr/wallpapers/pom-frog.jpg
-preload = ~/.config/hypr/wallpapers/sole-room.jpg
-preload = ~/.config/hypr/wallpapers/walk.jpg
-preload = ~/.config/hypr/wallpapers/moebius-floating-castle.jpg
-preload = ~/.config/hypr/wallpapers/moebius-peace.jpg
-
-wallpaper = eDP-1,~/.config/hypr/wallpapers/contemplate.jpg
-
-splash=true
-
-#disable ipc
-ipc = on
 #+end_src
