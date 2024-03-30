@@ -167,7 +167,7 @@ bind = $mainMod, E, exec, $fileManager
 bind = $mainMod, R, exec, $menu
 bind = $mainMod CTRL, R, exec, $runner
 bind = $mainMod SHIFT, R, exec, sudo $menu
-bind = $mainMod, T, exec, emacsclient -nc
+bind = $mainMod, T, exec, emacsclient -c
 bind = $mainMod, K, exec, keepassxc
 #+end_src
 ** Dwindle
@@ -221,6 +221,8 @@ bind = $mainMod SHIFT, S, movetoworkspace, special:magic
 #+end_src
 ** Scroll Through Workspaces
 #+begin_src hypr
+bind = $mainMod CTRL, right, workspace, e+1
+bind = $mainMod CTRL, left, workspace, e-1
 bind = $mainMod, mouse_down, workspace, e+1
 bind = $mainMod, mouse_up, workspace, e-1
 #+end_src

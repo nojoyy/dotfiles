@@ -1,7 +1,4 @@
 emacs/auto-save-list
-emacs/config.org~
-emacs/config.el~
-emacs/init.el~
 emacs/.org-id-locations
 emacs/org-roam.db
 emacs/bookmarks
@@ -12,7 +9,6 @@ emacs/request
 emacs/url
 emacs/elpaca
 emacs/elpa
-emacs/backups
 hypr/monitors.conf
 hypr/hyprpaper.conf
 fish/splash.txt
