@@ -21,6 +21,7 @@
   - [[#zoom][Zoom]]
 - [[#hooks][HOOKS]]
   - [[#kill-emacs-hook][Kill Emacs Hook]]
+  - [[#save-recentf-timer][Save Recentf Timer]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#language-support][LANGUAGE SUPPORT]]
   - [[#company][Company]]
@@ -312,6 +313,10 @@ Save recents on kill
 (add-hook 'kill-emacs-hook (recentf-save-list))
 #+end_src
 
+** Save Recentf Timer
+#+begin_src emacs-lisp
+(run-with-timer 0 (* 5 60) 'recentf-save-list) 
+#+end_src
 
 * IVY (COUNSEL)
 Generic completion mechanism

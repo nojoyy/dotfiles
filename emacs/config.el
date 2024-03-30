@@ -210,6 +210,8 @@
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
+(run-with-timer 0 (* 5 60) 'recentf-save-list)
+
 ;;use counsel with ivy (dependency)
 (use-package counsel
   :diminish
