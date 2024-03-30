@@ -280,6 +280,25 @@
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
 
+;; use which key (tooltips)
+(use-package which-key
+  :diminish
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+	  which-key-sort-uppercase-first nil
+	  which-key-add-column-padding 1
+	  which-key-max-display-columns nil
+	  which-key-min-display-lines 6
+	  which-key-side-window-slot -10
+	  which-key-side-window-max-height 0.25
+	  which-key-idle-delay 0.8
+	  which-key-max-description-length 25
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-separator "  ->  " ))
+
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
   '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
@@ -349,22 +368,3 @@
             ;;(dedicated . t) ;dedicated is supported in emacs27
             (reusable-frames . visible)
             (window-height . 0.3))))
-
-;; use which key (tooltips)
-(use-package which-key
-  :diminish
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-side-window-location 'bottom
-        which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
-	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit nil
-	  which-key-separator "  ->  " ))

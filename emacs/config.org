@@ -19,6 +19,8 @@
   - [[#rainbow-mode][Rainbow Mode]]
   - [[#tweaks][Tweaks]]
   - [[#zoom][Zoom]]
+- [[#hooks][HOOKS]]
+  - [[#kill-emacs-hook][Kill Emacs Hook]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#language-support][LANGUAGE SUPPORT]]
   - [[#company][Company]]
@@ -300,6 +302,14 @@ Set default Emacs backup directory - temp directory
   (global-set-key (kbd "C--") 'text-scale-decrease)
   (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
   (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+#+end_src
+
+
+* HOOKS
+** Kill Emacs Hook
+Save recents on kill
+#+begin_src
+(add-hook 'kill-emacs-hook (recentf-save-list))
 #+end_src
 
 
