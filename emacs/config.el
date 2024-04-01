@@ -85,6 +85,8 @@
   "h v" '(describe-variable :wk "describe variable")
   "h l c" '(reload-init-file :wk "load emacs config")
   "h l t" '(load-theme :wk "load theme")
+  "h k" '(:ignore :wk "kill")
+  "h k k" '(kill-emacs :wk "kill emacs")
   "h r" '(:ignore :wk "reload")
   "h r r" '((lambda () (interactive)
 	     (load-file "~/.config/emacs/init.el")
@@ -107,30 +109,38 @@
   "w s" '(evil-window-split :wk "split window")
   "w v" '(evil-window-vsplit :wk "split window vertical")
   ;; move
-  "w <right>" '(evil-window-right :wk "window right")
-  "w <left>" '(evil-window-left :wk "window left")
   "w <up>" '(evil-window-up :wk "window up")
   "w <down>" '(evil-window-down :wk "window down")
+  "w <left>" '(evil-window-left :wk "window left")
+  "w <right>" '(evil-window-right :wk "window right")
   "w >" '(evil-window-next :wk "window next")
   ;; swaps
-  "w C-<right>" '(buf-move-right :wk "window swap right")
-  "w C-<left>" '(buf-move-left :wk "window swap left")
   "w C-<up>" '(buf-move-up :wk "window swap up")
-  "w C-<down>" '(buf-move-down :wk "window swap down"))
-
+  "w C-<down>" '(buf-move-down :wk "window swap down")
+  "w C-<left>" '(buf-move-left :wk "window swap left")
+  "w C-<right>" '(buf-move-right :wk "window swap right"))
+ 
 ;; org mode
 (dt/leader-keys
   "o" '(:ignore t :wk "org mode")
   "o n" '(:ignore t :wk "org roam")
-  "o n f" '(org-roam-node-find :wk "find node")
-  "o n i" '(org-roam-node-insert :wk "insert node"))
+  "o n i" '(org-roam-node-insert :wk "insert node")
+  "o n f" '(org-roam-node-find :wk "find node"))
 
 ;; server
 (dt/leader-keys
   "s" '(:ignore t :wk "server/sudo")
-  "s s" '(server-start :wk "start server")
   "s k" '(server-force-delete :wk "kill server")
+  "s s" '(server-start :wk "start server")
   "s t" '(server-mode :wk "server toggle"))
+
+;; bookmarks
+(dt/leader-keys
+  "m" '(:ignore t :wk "bookmarks")
+  "m d" '(bookmark-delete :wk "delete bookmark")
+  "m l" '(bookmark-bmenu-list :wk "bookmark list")
+  "m m" '(bookmark-set :wk "add bookmark")
+  "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark"))
 )
 
 ;;use all-the-icons package
@@ -154,9 +164,9 @@
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-items '((recents . 8)
                           (agenda . 5 )
-                          (bookmarks . 3)
-                          (projects . 3)
-                          (registers . 3)))
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (registers . 5)))
   :custom
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book")))
@@ -177,7 +187,7 @@
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-12"))
 
 ;;set line spacing
 (setq-default line-spacing 0.15)
@@ -210,7 +220,7 @@
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-(run-with-timer 0 (* 5 60) 'recentf-save-list)
+
 
 ;;use counsel with ivy (dependency)
 (use-package counsel

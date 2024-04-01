@@ -8,9 +8,12 @@
   - [[#adding-scripts-and-plugins][Adding Scripts and Plugins]]
   - [[#package-manager][Package Manager]]
   - [[#plugins][Plugins]]
-- [[#set-backup-dir][SET BACKUP DIR]]
-- [[#evil-mode][EVIL MODE]]
-- [[#general-keybinds][GENERAL KEYBINDS]]
+- [[#backups][BACKUPS]]
+- [[#evil][EVIL]]
+- [[#general][GENERAL]]
+- [[#git][GIT]]
+  - [[#git-time-machine][Git Time Machine]]
+  - [[#magit][Magit]]
 - [[#gui][GUI]]
   - [[#all-the-icons][All The Icons]]
   - [[#dashboard][Dashboard]]
@@ -32,7 +35,7 @@
   - [[#projectile][Projectile]]
   - [[#sudo-edit][Sudo Edit]]
   - [[#which-key][Which-Key]]
-- [[#org-mode][ORG MODE]]
+- [[#org][ORG]]
   - [[#appearance][Appearance]]
   - [[#auto-tangle][Auto Tangle]]
   - [[#diminish-org-indent][Diminish Org Indent]]
@@ -66,8 +69,9 @@
 #+end_src
 
 
-* SET BACKUP DIR
+* BACKUPS
 Set default Emacs backup directory - temp directory
+Otherwise by defualt emacs will save backup files to the directory the original file is located in, which creates a mess for git.
 #+begin_src emacs-lisp
 (setq backup-directory-alist
   `((".*" . ,temporary-file-directory)))
@@ -76,7 +80,8 @@ Set default Emacs backup directory - temp directory
 #+end_src
 
 
-* EVIL MODE
+* EVIL
+Vim emulation layer
 #+begin_src emacs-lisp
 ;; use evil (vim emulator)
 ;; Expands to: (elpaca evil (use-package evil :demand t))
@@ -101,113 +106,145 @@ Set default Emacs backup directory - temp directory
 #+end_src
 
 
-* GENERAL KEYBINDS
+* GENERAL
+General Keybinds
 #+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-evil-setup)
+(use-package general
+  :config
+  (general-evil-setup)
 
-  ;; fast arrow scrolling
-  (general-def 'normal
-  "C-<up>" 'evil-backwards-paragraph
-  "C-<down>" 'evil-forwards-paragraph
-  "C-<right>" 'evil-end-of-line
-  "C-<left>" 'back-to-indentation)
+;; fast arrow scrolling
+(general-def 'normal
+"C-<up>" 'evil-backwards-paragraph
+"C-<down>" 'evil-forwards-paragraph
+"C-<right>" 'evil-end-of-line
+"C-<left>" 'back-to-indentation)
 
-  ;; vterm escape exit
-  (general-def 'insert vterm-mode-map
-    "M-ESC" 'vterm-toggle)
+;; vterm escape exit
+(general-def 'insert vterm-mode-map
+  "M-ESC" 'vterm-toggle)
 
-  ;;org mode fix cycle on normal mode
-  (general-def 'normal org-mode-map
-    "TAB" 'org-cycle)  
+;;org mode fix cycle on normal mode
+(general-def 'normal org-mode-map
+  "TAB" 'org-cycle)  
 
-  ;; set up '.' as the global leader key
-  (general-create-definer dt/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "." ;; set leader
-    :global-prefix "C-.") ;; access leader in insert mode
+;; set up '.' as the global leader key
+(general-create-definer dt/leader-keys
+  :states '(normal insert visual emacs)
+  :keymaps 'override
+  :prefix "." ;; set leader
+  :global-prefix "C-.") ;; access leader in insert mode
 
-  ;; nav and command keybinds
-  (dt/leader-keys
-    "/" '(counsel-M-x :wk "Meta-x")
-    ">" '(:ignore t :wk "goto")
-    "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto Emacs Config")
-    "> r" '(counsel-recentf :wk "goto recent files")
-    "> /" '(find-file :wk "goto file")
-    "TAB TAB" '(comment-line :wk "comment lines"))
+;; nav and command keybinds
+(dt/leader-keys
+  "/" '(counsel-M-x :wk "Meta-x")
+  ">" '(:ignore t :wk "goto")
+  "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto Emacs Config")
+  "> r" '(counsel-recentf :wk "goto recent files")
+  "> /" '(find-file :wk "goto file")
+  "TAB TAB" '(comment-line :wk "comment lines"))
 
-  ;; buffer keybinds
-  (dt/leader-keys
-    "b" '(:ignore t :wk "buffer")
-    "b b" '(counsel-switch-buffer :wk "switch to buffer")
-    "b i" '(ibuffer :wk "ibuffer")
-    "b k" '(kill-this-buffer :wk "kill buffer")
-    "b n" '(next-buffer :wk "next buffer")
-    "b p" '(previous-buffer :wk "previous buffer")
-    "b r" '(revert-buffer :wk "reload buffer"))
+;; buffer keybinds
+(dt/leader-keys
+  "b" '(:ignore t :wk "buffer")
+  "b b" '(counsel-switch-buffer :wk "switch to buffer")
+  "b i" '(ibuffer :wk "ibuffer")
+  "b k" '(kill-this-buffer :wk "kill buffer")
+  "b n" '(next-buffer :wk "next buffer")
+  "b p" '(previous-buffer :wk "previous buffer")
+  "b r" '(revert-buffer :wk "reload buffer"))
 
-  ;; help keybinds  
-  (dt/leader-keys
-    "h" '(:ignore t :wk "help")
-    "h l" '(:ignore t :wk "load")
-    "h f" '(describe-function :wk "describe function")
-    "h v" '(describe-variable :wk "describe variable")
-    "h l c" '(reload-init-file :wk "load emacs config")
-    "h l t" '(load-theme :wk "load theme")
-    "h r" '(:ignore :wk "reload")
-    "h r r" '((lambda () (interactive)
-	       (load-file "~/.config/emacs/init.el")
-	       (ignore (eplaca-process-queues))
-	     :wk "reload emacs config")))
+;; help keybinds  
+(dt/leader-keys
+  "h" '(:ignore t :wk "help")
+  "h l" '(:ignore t :wk "load")
+  "h f" '(describe-function :wk "describe function")
+  "h v" '(describe-variable :wk "describe variable")
+  "h l c" '(reload-init-file :wk "load emacs config")
+  "h l t" '(load-theme :wk "load theme")
+  "h k" '(:ignore :wk "kill")
+  "h k k" '(kill-emacs :wk "kill emacs")
+  "h r" '(:ignore :wk "reload")
+  "h r r" '((lambda () (interactive)
+	     (load-file "~/.config/emacs/init.el")
+	     (ignore (eplaca-process-queues))
+	   :wk "reload emacs config")))
 
-  ;; toggle keybinds
-  (dt/leader-keys
-    "t" '(:ignore t :wk "toggle")
-    "t l" '(display-line-numbers-mode :wk "toggle line numbers")
-    "t v" '(vterm-toggle :wk "toggle vterm")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines"))
+;; toggle keybinds
+(dt/leader-keys
+  "t" '(:ignore t :wk "toggle")
+  "t l" '(display-line-numbers-mode :wk "toggle line numbers")
+  "t v" '(vterm-toggle :wk "toggle vterm")
+  "t t" '(visual-line-mode :wk "Toggle truncated lines"))
 
-  ;; window keybinds
-  (dt/leader-keys
-    "w" '(:ignore t :wk "windows")
-    ;; splits
-    "w c" '(evil-window-delete :wk "close window")
-    "w n" '(evil-window-new :wk "new window")
-    "w s" '(evil-window-split :wk "split window")
-    "w v" '(evil-window-vsplit :wk "split window vertical")
-    ;; move
-    "w <right>" '(evil-window-right :wk "window right")
-    "w <left>" '(evil-window-left :wk "window left")
-    "w <up>" '(evil-window-up :wk "window up")
-    "w <down>" '(evil-window-down :wk "window down")
-    "w >" '(evil-window-next :wk "window next")
-    ;; swaps
-    "w C-<right>" '(buf-move-right :wk "window swap right")
-    "w C-<left>" '(buf-move-left :wk "window swap left")
-    "w C-<up>" '(buf-move-up :wk "window swap up")
-    "w C-<down>" '(buf-move-down :wk "window swap down"))
+;; window keybinds
+(dt/leader-keys
+  "w" '(:ignore t :wk "windows")
+  ;; splits
+  "w c" '(evil-window-delete :wk "close window")
+  "w n" '(evil-window-new :wk "new window")
+  "w s" '(evil-window-split :wk "split window")
+  "w v" '(evil-window-vsplit :wk "split window vertical")
+  ;; move
+  "w <up>" '(evil-window-up :wk "window up")
+  "w <down>" '(evil-window-down :wk "window down")
+  "w <left>" '(evil-window-left :wk "window left")
+  "w <right>" '(evil-window-right :wk "window right")
+  "w >" '(evil-window-next :wk "window next")
+  ;; swaps
+  "w C-<up>" '(buf-move-up :wk "window swap up")
+  "w C-<down>" '(buf-move-down :wk "window swap down")
+  "w C-<left>" '(buf-move-left :wk "window swap left")
+  "w C-<right>" '(buf-move-right :wk "window swap right"))
+ 
+;; org mode
+(dt/leader-keys
+  "o" '(:ignore t :wk "org mode")
+  "o n" '(:ignore t :wk "org roam")
+  "o n i" '(org-roam-node-insert :wk "insert node")
+  "o n f" '(org-roam-node-find :wk "find node"))
 
-  ;; org mode
-  (dt/leader-keys
-    "o" '(:ignore t :wk "org mode")
-    "o n" '(:ignore t :wk "org roam")
-    "o n f" '(org-roam-node-find :wk "find node")
-    "o n i" '(org-roam-node-insert :wk "insert node"))
+;; server
+(dt/leader-keys
+  "s" '(:ignore t :wk "server/sudo")
+  "s k" '(server-force-delete :wk "kill server")
+  "s s" '(server-start :wk "start server")
+  "s t" '(server-mode :wk "server toggle"))
 
-  ;; server
-  (dt/leader-keys
-    "s" '(:ignore t :wk "server/sudo")
-    "s s" '(server-start :wk "start server")
-    "s k" '(server-force-delete :wk "kill server")
-    "s t" '(server-mode :wk "server toggle"))
-  )
+;; bookmarks
+(dt/leader-keys
+  "m" '(:ignore t :wk "bookmarks")
+  "m d" '(bookmark-delete :wk "delete bookmark")
+  "m l" '(bookmark-bmenu-list :wk "bookmark list")
+  "m m" '(bookmark-set :wk "add bookmark")
+  "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark"))
+)
 #+end_src
+
+
+* GIT
+** Git Time Machine
+Use VC to view commit history for a file
+/#+begin_src emacs-lisp
+(use-package git-timemachine
+  :after git-timemachine
+  :hook (evil-normalize-keymaps . git-timemachine-hook)
+  :config
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
+)
+/#+end_src
+** Magit
+Git client for Emacs
+/#+begin_src emacs-lisp
+(use-package magit)
+(use-package git-commit)
+/#+end_src
 
 
 * GUI
 ** All The Icons
+Icon Support
 #+begin_src emacs-lisp
 ;;use all-the-icons package
 (use-package all-the-icons
@@ -218,8 +255,8 @@ Set default Emacs backup directory - temp directory
 (use-package all-the-icons-dired
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 #+end_src
-
 ** Dashboard
+Emacs dahboard/launcher page
 #+begin_src emacs-lisp
 (use-package dashboard
   :ensure t 
@@ -233,9 +270,9 @@ Set default Emacs backup directory - temp directory
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-items '((recents . 8)
                           (agenda . 5 )
-                          (bookmarks . 3)
-                          (projects . 3)
-                          (registers . 3)))
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (registers . 5)))
   :custom
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book")))
@@ -244,6 +281,7 @@ Set default Emacs backup directory - temp directory
 #+end_src
 
 ** Font Config
+General UI Font Config
 #+begin_src emacs-lisp
 ;;create font default
 (set-face-attribute 'default nil
@@ -259,27 +297,28 @@ Set default Emacs backup directory - temp directory
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-12"))
 
 ;;set line spacing
 (setq-default line-spacing 0.15)
 #+end_src
 
 ** Rainbow Delimiters
+Applies rainbow effect to delimiters and groups to sort out nesting errors
 #+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
-
 ** Rainbow Mode
+Render colors as a color, i.e. #ffa500 is a nice orange
 #+begin_src emacs-lisp
 (use-package rainbow-mode
   :diminish
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
 #+end_src
-
 ** Tweaks
+Various GUI tweaks and settings
 #+begin_src emacs-lisp
 ;;disable menu bar
 (menu-bar-mode -1)
@@ -298,6 +337,7 @@ Set default Emacs backup directory - temp directory
 #+end_src
 
 ** Zoom
+Zoom keybindings
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-=") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -312,14 +352,14 @@ Save recents on kill
 #+begin_src
 (add-hook 'kill-emacs-hook (recentf-save-list))
 #+end_src
-
 ** Save Recentf Timer
+Timer to save recentf-list every 5 min
 #+begin_src emacs-lisp
-(run-with-timer 0 (* 5 60) 'recentf-save-list) 
 #+end_src
 
+
 * IVY (COUNSEL)
-Generic completion mechanism
+Generic completion mechanism for prompts
 #+begin_src emacs-lisp
 ;;use counsel with ivy (dependency)
 (use-package counsel
@@ -357,8 +397,9 @@ Generic completion mechanism
 
 
 * LANGUAGE SUPPORT
+Support for programming languages and tools
 ** Company
-smart auto-complete tool
+Smart auto-complete tool
 #+begin_src emacs-lisp
 (use-package company
   :defer 2
@@ -378,8 +419,8 @@ smart auto-complete tool
 #+end_src
 
 ** Flycheck
-on the fly error checking
-python-pylint for python support
+On the fly error checking and syntax highlighting
+Requires python-pylint for python support
 #+begin_src emacs-lisp
 (use-package flycheck
   :ensure t
@@ -395,19 +436,22 @@ python-pylint for python support
 
 
 * MISC PACKAGES
+Enable and configure miscellaneous packages
 ** Diminsh
+Hides certain modes from mode bar
 #+begin_src emacs-lisp
 (use-package diminish)
 #+end_src
 ** Projectile
+Allows for project support - needed for Dashboard
 #+begin_src emacs-lisp
 (use-package projectile
   :diminish
   :config
   (projectile-mode 1))
 #+end_src
-
 ** Sudo Edit
+Allow for buffers to be written to using sudo
 #+begin_src emacs-lisp
 (use-package sudo-edit
   :config
@@ -417,7 +461,7 @@ python-pylint for python support
 #+end_src
 
 ** Which-Key
-Custom tooltips for custom commands
+Custom tooltips for custom keybinds
 #+begin_src emacs-lisp
 ;; use which key (tooltips)
 (use-package which-key
@@ -440,51 +484,48 @@ Custom tooltips for custom commands
 #+end_src
 
 
-* ORG MODE
+* ORG
+Packages and settings for org-mode
 ** Appearance
 #+begin_src emacs-lisp
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
   '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
 #+end_src
-
 ** Auto Tangle
+Auto tangle source block on save
 #+begin_src emacs-lisp
 (use-package org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
 #+end_src
-
 ** Diminish Org Indent
 #+begin_src emacs-lisp
 (eval-after-load 'org-indent '(diminish 'org-indent-mode))
 #+end_src
-
 ** Disable Poor Indenting
 #+begin_src emacs-lisp
 (setq org-edit-src-content-indentation 0)
 #+end_src
-
 ** Enabling Bullets
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
-
 ** Enabling ToC
 #+begin_src emacs-lisp
 (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
-
 ** Org Tempo
+Allows for easy blocks using shortcuts, for instance <s + TAB => code block
 #+begin_src emacs-lisp
 (require 'org-tempo) ;; quick blocks
 #+end_src
-
 ** Org Roam
+Non-heirarchical node-based note manger
 #+begin_src emacs-lisp
 (use-package org-roam
   :config
@@ -492,8 +533,8 @@ Custom tooltips for custom commands
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
 #+end_src
-
 ** Tweaks
+Various Visual Tweaks
 #+begin_src emacs-lisp
 (setq org-ellipsis " ⇁" 
       org-hide-emphasis-markers t)
@@ -501,6 +542,7 @@ Custom tooltips for custom commands
 
 
 * THEMING
+General styling/theming
 ** Install Doom Themes and Load Custom Theme
 
 https://mswift42.github.io/themecreator/
