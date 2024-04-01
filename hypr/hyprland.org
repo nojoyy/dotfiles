@@ -13,7 +13,7 @@ source = ~/.config/hypr/monitors.conf
 ** Set Default Programs
 #+begin_src hypr
 $terminal = kitty
-$fileManager = dolphin
+$fileManager = thunar
 $menu = tofi-drun | xargs hyprctl dispatch exec --
 $waybar = ~/.config/waybar/launch.sh
 #+end_src
@@ -24,7 +24,7 @@ Run programs on startup like emacs server, application bar, and notification ser
 exec-once = hyprpaper # wallpaper manager
 exec-once = $waybar # application bar
 exec-once = dunst # notification server
-exec-once = /user/libexec/polkit-kde-authentication-agent-1 # authentication layer
+exec-once = /usr/lib/polkit-kde-authentication-agent-1 # authentication layer
 #+end_src
 ** Input
 #+begin_src hypr
@@ -134,7 +134,7 @@ gestures {
 #+begin_src hypr
 misc {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
-    force_default_wallpaper = -1 # Set to 0 or 1 to disable the anime mascot wallpapers
+    force_default_wallpaper = 0 # Set to 0 or 1 to disable the anime mascot wallpapers
 }
 #+end_src
 * Configuration
@@ -159,13 +159,13 @@ $mainMod = SUPER
 ** Launch Applications
 #+begin_src hypr
 bind = $mainMod, Q, exec, $terminal
-bind = $mainMod, B, exec, firefox
-bind = $mainMod, F, exec, $fileManager
+bind = $mainMod, F, exec, firefox
+bind = $mainMod, E, exec, $fileManager
 
 bind = $mainMod, R, exec, $menu
 bind = $mainMod SHIFT, R, exec, sudo $menu
 
-bind = $mainMod, E, exec, emacsclient -nc
+bind = $mainMod, T, exec, emacsclient -nc
 bind = $mainMod, K, exec, keepassxc
 #+end_src
 ** Dwindle
