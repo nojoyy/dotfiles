@@ -22,6 +22,8 @@ Run programs on startup like emacs server, application bar, and notification ser
 #+begin_src hypr
 # Execute
 exec-once = hyprpaper # wallpaper manager
+exec-once = foot --server # terminal emulator server
+exec-once = emacs --daemon # emacs server
 exec-once = $waybar # application bar
 exec-once = dunst # notification server
 exec-once = /usr/lib/polkit-kde-authentication-agent-1 # authentication layer
