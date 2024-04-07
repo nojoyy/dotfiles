@@ -10,7 +10,7 @@
   - [[#plugins][Plugins]]
 - [[#backups][BACKUPS]]
 - [[#evil][EVIL]]
-- [[#general][GENERAL]]
+- [[#general-keybinds][GENERAL KEYBINDS]]
 - [[#git][GIT]]
   - [[#git-time-machine][Git Time Machine]]
   - [[#magit][Magit]]
@@ -107,7 +107,7 @@ Vim emulation layer
 #+end_src
 
 
-* GENERAL
+* GENERAL KEYBINDS
 General Keybinds
 #+begin_src emacs-lisp
 (use-package general
@@ -200,10 +200,7 @@ General Keybinds
  
 ;; org mode
 (dt/leader-keys
-  "o" '(:ignore t :wk "org mode")
-  "o n" '(:ignore t :wk "org roam")
-  "o n i" '(org-roam-node-insert :wk "insert node")
-  "o n f" '(org-roam-node-find :wk "find node"))
+  "o" '(:ignore t :wk "org mode"))
 
 ;; server
 (dt/leader-keys
