@@ -539,13 +539,13 @@ Allows for easy blocks using shortcuts, for instance <s + TAB => code block
 #+end_src
 ** Org Roam
 Non-heirarchical node-based note manger
-##+begin_src emacs-lisp
+Disabled
+
 (use-package org-roam
   :config
   (setq org-roam-directory (file-truename "~/org-roam")
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
-##+end_src
 ** Tweaks
 Various Visual Tweaks
 #+begin_src emacs-lisp
