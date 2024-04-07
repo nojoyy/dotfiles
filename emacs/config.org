@@ -441,6 +441,11 @@ Requires python-pylint for python support
 #+begin_src emacs-lisp
 (use-package rust-mode)
 #+end_src
+*** Nix
+#+begin_src emacs-lisp
+(use-package nix-mode
+  :mode "\\.nix\\'")
+#+end_src
 
 
 * MISC PACKAGES
@@ -534,13 +539,13 @@ Allows for easy blocks using shortcuts, for instance <s + TAB => code block
 #+end_src
 ** Org Roam
 Non-heirarchical node-based note manger
-#+begin_src emacs-lisp
+##+begin_src emacs-lisp
 (use-package org-roam
   :config
   (setq org-roam-directory (file-truename "~/org-roam")
         find-file-visit-truename t)
   (org-roam-db-autosync-mode))
-#+end_src
+##+end_src
 ** Tweaks
 Various Visual Tweaks
 #+begin_src emacs-lisp
