@@ -206,8 +206,8 @@
 * Style
 #+begin_src css :tangle style.css
 #waybar {
-  background: rgba(0,0,0,0);
-  color: #333333;
+  background: rgba(33,33,33,33);
+  color: #dddddd;
 }
 
 #idle_inibitor.activated {
@@ -220,17 +220,38 @@ button {
   box-shadow: inset 0 -3px transparent;
 }
 
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#mpd {
+    padding: 0 3px;
+}
+
 button:hover {
   background: inherit;
 }
 
 /* give modules right hand margin */
 .modules-right {
+  background: rgba(33,33,33,33);
   margin-right: 10px;
 }
 
 ,*{
-  font-family: FiraCode; 
+  font-family: FiraCodeNerdFont, FontAwesome; 
   font-size: 12.5px;
 }
 #+end_src

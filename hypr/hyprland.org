@@ -12,7 +12,7 @@ source = ~/.config/hypr/monitors.conf
 #+end_src
 ** Set Default Programs
 #+begin_src hypr
-$terminal = kitty
+$terminal = footclient
 $fileManager = thunar
 $menu = tofi-drun | xargs hyprctl dispatch exec --
 $waybar = ~/.config/waybar/launch.sh

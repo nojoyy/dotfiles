@@ -17,6 +17,7 @@
 - [[#gui][GUI]]
   - [[#all-the-icons][All The Icons]]
   - [[#dashboard][Dashboard]]
+  - [[#doom-modeline][Doom Modeline]]
   - [[#font-config][Font Config]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#rainbow-mode][Rainbow Mode]]
@@ -280,6 +281,13 @@ Emacs dahboard/launcher page
   (dashboard-setup-startup-hook))
 #+end_src
 
+** Doom Modeline
+Better looking modeline from doom emacs
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)) 
+#+end_src
 ** Font Config
 General UI Font Config
 #+begin_src emacs-lisp

@@ -173,6 +173,10 @@
   :config
   (dashboard-setup-startup-hook))
 
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
 ;;create font default
 (set-face-attribute 'default nil
   :font "FiraCode"
