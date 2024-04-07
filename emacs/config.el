@@ -122,10 +122,7 @@
  
 ;; org mode
 (dt/leader-keys
-  "o" '(:ignore t :wk "org mode")
-  "o n" '(:ignore t :wk "org roam")
-  "o n i" '(org-roam-node-insert :wk "insert node")
-  "o n f" '(org-roam-node-find :wk "find node"))
+  "o" '(:ignore t :wk "org mode"))
 
 ;; server
 (dt/leader-keys
@@ -283,6 +280,9 @@
 
 (use-package rust-mode)
 
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
 (use-package diminish)
 
 (use-package projectile
@@ -336,12 +336,6 @@
     :init (add-hook 'org-mode-hook 'toc-org-enable))
 
 (require 'org-tempo) ;; quick blocks
-
-(use-package org-roam
-  :config
-  (setq org-roam-directory (file-truename "~/org-roam")
-        find-file-visit-truename t)
-  (org-roam-db-autosync-mode))
 
 (setq org-ellipsis " ⇁" 
       org-hide-emphasis-markers t)

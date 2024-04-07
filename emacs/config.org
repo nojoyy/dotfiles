@@ -1,16 +1,92 @@
+#+TITLE: EMACS CONFIG
+#+AUTHOR: Noah Joyner
+#+DESCRIPTION: Personal Emacs Config made using DistroTube Tutorial
+#+AUTO_TANGLE: t
+#+STARTUP: overview 
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :tangle config.el
+
+* TABLE OF CONTENTS                                                   :toc:
+- [[#loading-scripts][LOADING SCRIPTS]]
+  - [[#adding-scripts-and-plugins][Adding Scripts and Plugins]]
+  - [[#package-manager][Package Manager]]
+  - [[#plugins][Plugins]]
+- [[#backups][BACKUPS]]
+- [[#evil][EVIL]]
+- [[#general-keybinds][GENERAL KEYBINDS]]
+- [[#git][GIT]]
+  - [[#git-time-machine][Git Time Machine]]
+  - [[#magit][Magit]]
+- [[#gui][GUI]]
+  - [[#all-the-icons][All The Icons]]
+  - [[#dashboard][Dashboard]]
+  - [[#doom-modeline][Doom Modeline]]
+  - [[#font-config][Font Config]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#rainbow-mode][Rainbow Mode]]
+  - [[#tweaks][Tweaks]]
+  - [[#zoom][Zoom]]
+- [[#hooks][HOOKS]]
+  - [[#kill-emacs-hook][Kill Emacs Hook]]
+  - [[#save-recentf-timer][Save Recentf Timer]]
+- [[#ivy-counsel][IVY (COUNSEL)]]
+- [[#language-support][LANGUAGE SUPPORT]]
+  - [[#company][Company]]
+  - [[#flycheck][Flycheck]]
+  - [[#non-native-language-modes][Non Native Language Modes]]
+- [[#misc-packages][MISC PACKAGES]]
+  - [[#diminsh][Diminsh]]
+  - [[#projectile][Projectile]]
+  - [[#sudo-edit][Sudo Edit]]
+  - [[#which-key][Which-Key]]
+- [[#org][ORG]]
+  - [[#appearance][Appearance]]
+  - [[#auto-tangle][Auto Tangle]]
+  - [[#diminish-org-indent][Diminish Org Indent]]
+  - [[#disable-poor-indenting][Disable Poor Indenting]]
+  - [[#enabling-bullets][Enabling Bullets]]
+  - [[#enabling-toc][Enabling ToC]]
+  - [[#org-tempo][Org Tempo]]
+  - [[#org-roam][Org Roam]]
+  - [[#tweaks-1][Tweaks]]
+- [[#theming][THEMING]]
+  - [[#install-doom-themes-and-load-custom-theme][Install Doom Themes and Load Custom Theme]]
+  - [[#transparency][Transparency]]
+- [[#v-term][V-TERM]]
+  - [[#enable][Enable]]
+  - [[#v-term-toggle][V-Term Toggle]]
+
+* LOADING SCRIPTS 
+** Adding Scripts and Plugins
+#+begin_src emacs-lisp
 (add-to-list 'load-path "~/.config/emacs/scripts")
 (add-to-list 'load-path "~/.config/emacs/plugins")
-
+#+end_src
+** Package Manager
+#+begin_src emacs-lisp
 (require 'elpaca-setup)
-
+#+end_src
+** Plugins
+#+begin_src emacs-lisp
 (require 'buffer-move)
 (require 'line-move)
+#+end_src
 
+
+* BACKUPS
+Set default Emacs backup directory - temp directory
+Otherwise by defualt emacs will save backup files to the directory the original file is located in, which creates a mess for git.
+#+begin_src emacs-lisp
 (setq backup-directory-alist
   `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
   `((".*" ,temporary-file-directory t)))
+#+end_src
 
+
+* EVIL
+Vim emulation layer
+#+begin_src emacs-lisp
 ;; use evil (vim emulator)
 ;; Expands to: (elpaca evil (use-package evil :demand t))
 (use-package evil
@@ -31,7 +107,12 @@
 
 ;; use evil tutor (tutorial)
 (use-package evil-tutor)
+#+end_src
 
+
+* GENERAL KEYBINDS
+General Keybinds
+#+begin_src emacs-lisp
 (use-package general
   :config
   (general-evil-setup)
@@ -139,7 +220,33 @@
   "m m" '(bookmark-set :wk "add bookmark")
   "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark"))
 )
+#+end_src
 
+
+* GIT
+** Git Time Machine
+Use VC to view commit history for a file
+/#+begin_src emacs-lisp
+(use-package git-timemachine
+  :after git-timemachine
+  :hook (evil-normalize-keymaps . git-timemachine-hook)
+  :config
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
+)
+/#+end_src
+** Magit
+Git client for Emacs
+/#+begin_src emacs-lisp
+(use-package magit)
+(use-package git-commit)
+/#+end_src
+
+
+* GUI
+** All The Icons
+Icon Support
+#+begin_src emacs-lisp
 ;;use all-the-icons package
 (use-package all-the-icons
   :ensure t
@@ -148,7 +255,10 @@
 ;;use ati for dired (file manager)
 (use-package all-the-icons-dired
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
-
+#+end_src
+** Dashboard
+Emacs dahboard/launcher page
+#+begin_src emacs-lisp
 (use-package dashboard
   :ensure t 
   :init
@@ -169,11 +279,18 @@
                                     (bookmarks . "book")))
   :config
   (dashboard-setup-startup-hook))
+#+end_src
 
+** Doom Modeline
+Better looking modeline from doom emacs
+#+begin_src emacs-lisp
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1))
-
+  :init (doom-modeline-mode 1)) 
+#+end_src
+** Font Config
+General UI Font Config
+#+begin_src emacs-lisp
 ;;create font default
 (set-face-attribute 'default nil
   :font "FiraCode"
@@ -192,15 +309,25 @@
 
 ;;set line spacing
 (setq-default line-spacing 0.15)
+#+end_src
 
+** Rainbow Delimiters
+Applies rainbow effect to delimiters and groups to sort out nesting errors
+#+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-
+#+end_src
+** Rainbow Mode
+Render colors as a color, i.e. #ffa500 is a nice orange
+#+begin_src emacs-lisp
 (use-package rainbow-mode
   :diminish
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
-
+#+end_src
+** Tweaks
+Various GUI tweaks and settings
+#+begin_src emacs-lisp
 ;;disable menu bar
 (menu-bar-mode -1)
 
@@ -215,14 +342,33 @@
 
 ;;display truncated lines by default
 (global-visual-line-mode t)
+#+end_src
 
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+** Zoom
+Zoom keybindings
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-=") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+  (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+#+end_src
 
 
+* HOOKS
+** Kill Emacs Hook
+Save recents on kill
+#+begin_src
+(add-hook 'kill-emacs-hook (recentf-save-list))
+#+end_src
+** Save Recentf Timer
+Timer to save recentf-list every 5 min
+#+begin_src emacs-lisp
+#+end_src
 
+
+* IVY (COUNSEL)
+Generic completion mechanism for prompts
+#+begin_src emacs-lisp
 ;;use counsel with ivy (dependency)
 (use-package counsel
   :diminish
@@ -255,7 +401,14 @@
   (ivy-virtual-abbreviate 'full
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev))
+#+end_src
 
+
+* LANGUAGE SUPPORT
+Support for programming languages and tools
+** Company
+Smart auto-complete tool
+#+begin_src emacs-lisp
 (use-package company
   :defer 2
   :diminish
@@ -271,31 +424,58 @@
   :after company
   :diminish
   :hook (company-mode . company-box-mode))
+#+end_src
 
+** Flycheck
+On the fly error checking and syntax highlighting
+Requires python-pylint for python support
+#+begin_src emacs-lisp
 (use-package flycheck
   :ensure t
   :defer t
   :diminish
   :init (global-flycheck-mode))
-
+#+end_src
+** Non Native Language Modes
+*** Rust
+#+begin_src emacs-lisp
 (use-package rust-mode)
-
+#+end_src
+*** Nix
+#+begin_src emacs-lisp
 (use-package nix-mode
   :mode "\\.nix\\'")
+#+end_src
 
+
+* MISC PACKAGES
+Enable and configure miscellaneous packages
+** Diminsh
+Hides certain modes from mode bar
+#+begin_src emacs-lisp
 (use-package diminish)
-
+#+end_src
+** Projectile
+Allows for project support - needed for Dashboard
+#+begin_src emacs-lisp
 (use-package projectile
   :diminish
   :config
   (projectile-mode 1))
-
+#+end_src
+** Sudo Edit
+Allow for buffers to be written to using sudo
+#+begin_src emacs-lisp
 (use-package sudo-edit
   :config
   (dt/leader-keys
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
+#+end_src
 
+** Which-Key
+Custom tooltips for custom keybinds
+#+begin_src emacs-lisp
 ;; use which key (tooltips)
 (use-package which-key
   :diminish
@@ -314,32 +494,73 @@
 	  which-key-max-description-length 25
 	  which-key-allow-imprecise-window-fit nil
 	  which-key-separator "  ->  " ))
+#+end_src
 
+
+* ORG
+Packages and settings for org-mode
+** Appearance
+#+begin_src emacs-lisp
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
   '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
-
+#+end_src
+** Auto Tangle
+Auto tangle source block on save
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
-
+#+end_src
+** Diminish Org Indent
+#+begin_src emacs-lisp
 (eval-after-load 'org-indent '(diminish 'org-indent-mode))
-
+#+end_src
+** Disable Poor Indenting
+#+begin_src emacs-lisp
 (setq org-edit-src-content-indentation 0)
-
+#+end_src
+** Enabling Bullets
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-
+#+end_src
+** Enabling ToC
+#+begin_src emacs-lisp
 (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
-
+#+end_src
+** Org Tempo
+Allows for easy blocks using shortcuts, for instance <s + TAB => code block
+#+begin_src emacs-lisp
 (require 'org-tempo) ;; quick blocks
+#+end_src
+** Org Roam
+Non-heirarchical node-based note manger
+Disabled
 
+(use-package org-roam
+  :config
+  (setq org-roam-directory (file-truename "~/org-roam")
+        find-file-visit-truename t)
+  (org-roam-db-autosync-mode))
+** Tweaks
+Various Visual Tweaks
+#+begin_src emacs-lisp
 (setq org-ellipsis " ⇁" 
       org-hide-emphasis-markers t)
+#+end_src
 
+
+* THEMING
+General styling/theming
+** Install Doom Themes and Load Custom Theme
+
+https://mswift42.github.io/themecreator/
+
+#+begin_src emacs-lisp
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
 (use-package doom-themes
   :config
@@ -347,18 +568,30 @@
     doom-themes-enable-italic t)
 (load-theme 'doom-tokyo-night t)
 )
+#+end_src
 
+** Transparency
+#+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(alpha-background . 95))
+#+end_src
 
-;;use vterm
-(use-package vterm
-:config
-(setq shell-file-name "/bin/fish" ;; sets default shell to fish
-  vterm-max-scrollback 5000 ;; sets max scroll back
-  vterm-shell "/bin/fish" ;; sets vterm shell to fish
-  vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
- (add-to-list 'evil-insert-state-modes 'vterm-mode)) ;;sets state to insert
 
+* V-TERM
+Terminal Emulator
+** Enable
+#+begin_src emacs-lisp
+  ;;use vterm
+  (use-package vterm
+  :config
+  (setq shell-file-name "/bin/fish" ;; sets default shell to fish
+    vterm-max-scrollback 5000 ;; sets max scroll back
+    vterm-shell "/bin/fish" ;; sets vterm shell to fish
+    vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
+   (add-to-list 'evil-insert-state-modes 'vterm-mode)) ;;sets state to insert    
+#+end_src
+
+** V-Term Toggle
+#+begin_src emacs-lisp
 ;;toggle vterm
 (use-package vterm-toggle
   :after vterm
@@ -378,3 +611,6 @@
             ;;(dedicated . t) ;dedicated is supported in emacs27
             (reusable-frames . visible)
             (window-height . 0.3))))
+#+end_src
+
+
