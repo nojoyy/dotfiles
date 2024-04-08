@@ -58,13 +58,14 @@
 	"clock#time": {
 		"interval": 10,
 		"format": "{:%H:%M}",
-		"tooltip": false
+		"tooltip": false,
+		"timezone": "America/Kentucky/Louisville",
 	},
 
 	"clock#date": {
 		"interval": 20,
 		"format": "{:%e %b %Y}",
-		"tooltip": false
+		"tooltip": false,
 		//"tooltip-format": "{:%e %B %Y}"
 	},
 
