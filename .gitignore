@@ -10,6 +10,7 @@ emacs/request
 emacs/url
 emacs/elpaca
 emacs/elpa
+emacs/eln-cache
 hypr/monitors.conf
 hypr/hyprpaper.conf
 fish/splash.txt
