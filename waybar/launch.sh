@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 if [ -f $HOME/.cache/waybar-disabled ] ;then
     killall waybar
     pkill waybar
