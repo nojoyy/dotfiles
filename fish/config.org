@@ -133,11 +133,6 @@ function fish_greeting
 end
 #+end_src
 
-* Zoxide Integration
-Adding zoxide, a smarter cd command
-#+begin_src sh
-zoxide init fish | source
-#+end_src
 * Required (Investigate)
 #+begin_src sh
 if status is-interactive
@@ -145,5 +140,8 @@ if status is-interactive
 end
 #+end_src
 
-
-
+* Zoxide Integration
+Adding zoxide, a smarter cd command
+#+begin_src sh
+zoxide init fish | source
+#+end_src
