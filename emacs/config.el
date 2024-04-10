@@ -98,7 +98,8 @@
   "t" '(:ignore t :wk "toggle")
   "t l" '(display-line-numbers-mode :wk "toggle line numbers")
   "t v" '(vterm-toggle :wk "toggle vterm")
-  "t t" '(visual-line-mode :wk "Toggle truncated lines"))
+  "t t" '(visual-line-mode :wk "Toggle truncated lines")
+  "t n" '(neotree-toggle :wk "Toggle neotree file viewer"))
 
 ;; window keybinds
 (dt/leader-keys
@@ -315,6 +316,25 @@
 	  which-key-max-description-length 25
 	  which-key-allow-imprecise-window-fit nil
 	  which-key-separator "  ->  " ))
+
+(use-package neotree
+  :config
+  (setq neo-smart-open t
+        neo-show-hidden-files t
+        neo-window-width 55
+        neo-window-fixed-size nil
+        inhibit-compacting-font-caches t
+        projectile-switch-project-action 'neotree-projectile-action)
+        ;; truncate long file names in neotree
+        (add-hook 'neo-after-create-hook
+           #'(lambda (_)
+               (with-current-buffer (get-buffer neo-buffer-name)
+                 (setq truncate-lines t)
+                 (setq word-wrap nil)
+                 (make-local-variable 'auto-hscroll-mode)
+                 (setq auto-hscroll-mode nil)))))
+
+(setq neo-theme 'icons)
 
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
