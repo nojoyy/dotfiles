@@ -14,7 +14,7 @@ source = ~/.config/hypr/monitors.conf
 #+begin_src hypr
 $terminal = footclient
 $fileManager = thunar
-$menu = tofi-drun | xargs hyprctl dispatch exec --
+$menu = tofi-drun
 $waybar = ~/.config/waybar/launch.sh
 #+end_src
 ** Execute Startup Programs
