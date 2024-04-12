@@ -203,6 +203,11 @@ General Keybinds
   "w C-<left>" '(buf-move-left :wk "window swap left")
   "w C-<right>" '(buf-move-right :wk "window swap right"))
  
+;; git/magit
+(dt/leader-keys
+  "g" '(:ignore t :wk "git")
+  "g s" '(magit-status :wk "git status"))
+
 ;; org mode
 (dt/leader-keys
   "o" '(:ignore t :wk "org mode"))
@@ -239,10 +244,10 @@ Use VC to view commit history for a file
 /#+end_src
 ** Magit
 Git client for Emacs
-/#+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package magit)
 (use-package git-commit)
-/#+end_src
+#+end_src
 
 
 * GUI

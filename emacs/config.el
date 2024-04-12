@@ -121,6 +121,11 @@
   "w C-<left>" '(buf-move-left :wk "window swap left")
   "w C-<right>" '(buf-move-right :wk "window swap right"))
  
+;; git/magit
+(dt/leader-keys
+  "g" '(:ignore t :wk "git")
+  "g s" '(magit-status :wk "git status"))
+
 ;; org mode
 (dt/leader-keys
   "o" '(:ignore t :wk "org mode"))
@@ -140,6 +145,9 @@
   "m m" '(bookmark-set :wk "add bookmark")
   "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark"))
 )
+
+(use-package magit)
+(use-package git-commit)
 
 ;;use all-the-icons package
 (use-package all-the-icons
