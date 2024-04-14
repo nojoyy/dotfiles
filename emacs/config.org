@@ -335,19 +335,22 @@ Render colors as a color, i.e. #ffa500 is a nice orange
 ** Tweaks
 Various GUI tweaks and settings
 #+begin_src emacs-lisp
-;;disable menu bar
+;; disable menu bar
 (menu-bar-mode -1)
 
-;;disable tool bar
+;; disable tool bar
 (tool-bar-mode -1)
 
-;;disable startup screen
+;; disable scroll bar
+(scroll-bar-mode -1)
+
+;; disable startup screen
 (setq inhibit-startup-screen t)  
 
-;;display line numbers by default
+;; display line numbers by default
 (global-display-line-numbers-mode)
 
-;;display truncated lines by default
+;; display truncated lines by default
 (global-visual-line-mode t)
 #+end_src
 

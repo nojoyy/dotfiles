@@ -63,7 +63,7 @@ selection-match-color = #00000000
 #+end_src
 ** Cursor Theming
 #+begin_src sh
-text-cursor-style = bar # bar, block, or underscore
+text-cursor-style = bar
 text-cursor-color=#FFFFFF
 text-cursor-background = #000000
 text-cursor-corner-radius = 0

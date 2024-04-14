@@ -210,19 +210,22 @@
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
 
-;;disable menu bar
+;; disable menu bar
 (menu-bar-mode -1)
 
-;;disable tool bar
+;; disable tool bar
 (tool-bar-mode -1)
 
-;;disable startup screen
+;; disable scroll bar
+(scroll-bar-mode -1)
+
+;; disable startup screen
 (setq inhibit-startup-screen t)  
 
-;;display line numbers by default
+;; display line numbers by default
 (global-display-line-numbers-mode)
 
-;;display truncated lines by default
+;; display truncated lines by default
 (global-visual-line-mode t)
 
 (global-set-key (kbd "C-=") 'text-scale-increase)

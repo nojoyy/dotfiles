@@ -31,7 +31,7 @@ selection-background-corner-radius = 0
 # Matching portion of selection text
 selection-match-color = #00000000
 
-text-cursor-style = bar # bar, block, or underscore
+text-cursor-style = bar
 text-cursor-color=#FFFFFF
 text-cursor-background = #000000
 text-cursor-corner-radius = 0
