@@ -6,6 +6,7 @@ emacs/projectile-bookmarks.eld
 emacs/recentf
 emacs/bookmarks
 emacs/tramp
+emacs/transient
 emacs/request
 emacs/url
 emacs/elpaca
