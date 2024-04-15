@@ -137,6 +137,10 @@
   "s s" '(server-start :wk "start server")
   "s t" '(server-mode :wk "server toggle"))
 
+;; projectile
+(dt/leader-keys
+  "p" '(projectile-command-map :wk "Projectile"))
+
 ;; bookmarks
 (dt/leader-keys
   "m" '(:ignore t :wk "bookmarks")
@@ -168,6 +172,7 @@
   (setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
   ;;(setq dashboard-startup-banner "/home/dt/.config/emacs/images/emacs-dash.png")  ;; use custom image as banner
   (setq dashboard-center-content nil) ;; set to 't' for centered content
+  (setq dashboard-projects-backend 'projectile)
   (setq dashboard-items '((recents . 8)
                           (agenda . 5 )
                           (bookmarks . 5)
@@ -202,6 +207,25 @@
 ;;set line spacing
 (setq-default line-spacing 0.15)
 
+(use-package neotree
+  :config
+  (setq neo-smart-open t
+        neo-show-hidden-files t
+        neo-window-width 25
+        neo-window-fixed-size nil
+        inhibit-compacting-font-caches t
+        projectile-switch-project-action 'neotree-projectile-action)
+        ;; truncate long file names in neotree
+        (add-hook 'neo-after-create-hook
+           #'(lambda (_)
+               (with-current-buffer (get-buffer neo-buffer-name)
+                 (setq truncate-lines t)
+                 (setq word-wrap nil)
+                 (make-local-variable 'auto-hscroll-mode)
+                 (setq auto-hscroll-mode nil)))))
+
+(setq neo-theme 'icons)
+
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -232,8 +256,6 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-
-
 
 ;;use counsel with ivy (dependency)
 (use-package counsel
@@ -302,6 +324,11 @@
   :diminish
   :config
   (projectile-mode 1))
+(setq projectile-project-search-path '("~/projects/"))
+
+(require 'recentf)
+(recentf-mode 1)
+(add-to-list 'recentf-exclude "/home/noah/.config/emacs/bookmarks")
 
 (use-package sudo-edit
   :config
@@ -327,25 +354,6 @@
 	  which-key-max-description-length 25
 	  which-key-allow-imprecise-window-fit nil
 	  which-key-separator "  ->  " ))
-
-(use-package neotree
-  :config
-  (setq neo-smart-open t
-        neo-show-hidden-files t
-        neo-window-width 55
-        neo-window-fixed-size nil
-        inhibit-compacting-font-caches t
-        projectile-switch-project-action 'neotree-projectile-action)
-        ;; truncate long file names in neotree
-        (add-hook 'neo-after-create-hook
-           #'(lambda (_)
-               (with-current-buffer (get-buffer neo-buffer-name)
-                 (setq truncate-lines t)
-                 (setq word-wrap nil)
-                 (make-local-variable 'auto-hscroll-mode)
-                 (setq auto-hscroll-mode nil)))))
-
-(setq neo-theme 'icons)
 
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
