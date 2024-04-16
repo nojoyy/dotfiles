@@ -202,7 +202,7 @@
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "FiraCode-12"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
 
 ;;set line spacing
 (setq-default line-spacing 0.15)
