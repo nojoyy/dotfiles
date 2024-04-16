@@ -26,7 +26,8 @@ set brcolors brred brgreen bryellow brblue brmagenta brcyan
 set CFD ~/.config/fish
 #+end_src
 
-* Primary Functions
+
+* TERMINAL FUNCTIONS
 ** Escape Sequences
 Allow for easier cursor movements
 #+begin_src sh
@@ -98,8 +99,9 @@ function random_color
 end
 #+end_src
 
-* Customization
-** Greetings
+
+* GREETINGS
+** Custom Greetings
 *** Figlet Greeting
 #+begin_src sh
 function figlet_greeting
@@ -133,15 +135,17 @@ function fish_greeting
 end
 #+end_src
 
-* Required (Investigate)
+
+* REQUIRED
 #+begin_src sh
 if status is-interactive
   # Commands to run in interactive sessions can go here
 end
 #+end_src
 
-* Zoxide Integration
+* ZOXIDE
 Adding zoxide, a smarter cd command
+Must be at end
 #+begin_src sh
 zoxide init fish | source
 #+end_src
