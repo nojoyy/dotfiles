@@ -11,27 +11,6 @@
 (setq auto-save-file-name-transforms
   `((".*" ,temporary-file-directory t)))
 
-;; use evil (vim emulator)
-;; Expands to: (elpaca evil (use-package evil :demand t))
-(use-package evil
-  :init      ;; tweak evil's configuration before loading it
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  (setq evil-vsplit-window-right t)
-  (setq evil-split-window-below t)
-  
-  (evil-mode))
-
-;; use evil collection (keybinds)
-(use-package evil-collection
-    :after evil
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer))
-    (evil-collection-init))
-
-;; use evil tutor (tutorial)
-(use-package evil-tutor)
-
 (use-package general
   :config
   (general-evil-setup)
@@ -150,16 +129,115 @@
   "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark"))
 )
 
-(use-package magit)
-(use-package git-commit)
+(use-package which-key
+  :diminish
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+	  which-key-sort-uppercase-first nil
+	  which-key-add-column-padding 1
+	  which-key-max-display-columns nil
+	  which-key-min-display-lines 6
+	  which-key-side-window-slot -10
+	  which-key-side-window-max-height 0.25
+	  which-key-idle-delay 0.8
+	  which-key-max-description-length 25
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-separator "  ->  " ))
 
-;;use all-the-icons package
+;;use counsel with ivy (dependency)
+(use-package counsel
+  :diminish
+  :after ivy
+  :config (counsel-mode))
+
+;;use ivy
+(use-package ivy
+  :diminish
+  :bind
+  ;; ivy-resume resumes the last Ivy-based completion.
+  (("C-c C-r" . ivy-resume)
+   ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :after ivy
+  :after all-the-icons-ivy-rich
+  :ensure t
+  :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev))
+
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-vsplit-window-right t)
+  (setq evil-split-window-below t)
+  (evil-mode))
+(use-package evil-collection ;; Keybind collection
+    :after evil
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer))
+    (evil-collection-init))
+(use-package evil-tutor)
+
+(use-package seq)
+(use-package magit
+  :after seq)
+(use-package git-commit
+  :after seq)
+
+(use-package company
+  :defer 2
+  :diminish
+  :custom
+  (company-begin-commands '(self-insert-command))
+  (company-idle-delay .1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations 't)
+  (global-company-mode t))
+
+(use-package company-box
+  :after company
+  :diminish
+  :hook (company-mode . company-box-mode))
+
+(use-package flycheck
+  :ensure t
+  :defer t
+  :diminish
+  :init (global-flycheck-mode))
+
+(use-package rust-mode)
+
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
+(use-package rjsx-mode
+  :mode "\\.js\\'"
+  :mode "\\.ts\\'"
+  :mode "\\.jsx\\'"
+  :mode "\\.tsx\\'")
+
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
-
-;;use ati for dired (file manager)
-(use-package all-the-icons-dired
+(use-package all-the-icons-dired ;; ATI Dired Support
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 
 (use-package dashboard
@@ -186,11 +264,22 @@
 
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)) 
+(use-package diminish) ;; Adds ability to diminish modes from modeline
+
+;; Select Theme
+(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+    doom-themes-enable-italic t)
+  (load-theme 'doom-tokyo-night t))
+  
+;; Transparency
 
 ;;create font default
 (set-face-attribute 'default nil
-  :font "FiraCode"
+  :font "FiraCodeNerdFont"
   :weight 'Regular)
 
 ;;make comments italicized
@@ -257,69 +346,6 @@
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-;;use counsel with ivy (dependency)
-(use-package counsel
-  :diminish
-  :after ivy
-  :config (counsel-mode))
-
-;;use ivy
-(use-package ivy
-  :diminish
-  :bind
-  ;; ivy-resume resumes the last Ivy-based completion.
-  (("C-c C-r" . ivy-resume)
-   ("C-x B" . ivy-switch-buffer-other-window))
-  :custom
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
-  :config
-  (ivy-mode))
-
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init (all-the-icons-ivy-rich-mode 1))
-
-(use-package ivy-rich
-  :after ivy
-  :after all-the-icons-ivy-rich
-  :ensure t
-  :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
-  :custom
-  (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev))
-
-(use-package company
-  :defer 2
-  :diminish
-  :custom
-  (company-begin-commands '(self-insert-command))
-  (company-idle-delay .1)
-  (company-minimum-prefix-length 2)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  (global-company-mode t))
-
-(use-package company-box
-  :after company
-  :diminish
-  :hook (company-mode . company-box-mode))
-
-(use-package flycheck
-  :ensure t
-  :defer t
-  :diminish
-  :init (global-flycheck-mode))
-
-(use-package rust-mode)
-
-(use-package nix-mode
-  :mode "\\.nix\\'")
-
-(use-package diminish)
-
 (use-package projectile
   :diminish
   :config
@@ -336,28 +362,9 @@
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
 
-;; use which key (tooltips)
-(use-package which-key
-  :diminish
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-side-window-location 'bottom
-        which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
-	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit nil
-	  which-key-separator "  ->  " ))
-
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
-  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.2)))))
+  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
 
 (use-package org-auto-tangle
   :defer t
@@ -380,12 +387,50 @@
 (setq org-ellipsis " ⇁" 
       org-hide-emphasis-markers t)
 
-(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t
-    doom-themes-enable-italic t)
-(load-theme 'doom-tokyo-night t)
-)
+(use-package vterm
+;;    :ensure (vterm :post-build
+;;      (progn
+;;       (setq vterm-always-compile-module t)
+;;       (require 'vterm)
+;;        ;;print compilation info for elpaca
+;;        (with-current-buffer (get-buffer-create vterm-install-buffer-name)
+;;          (goto-char (point-min))
+;;        (while (not (eobp))
+;;         (message "%S"
+;;            (buffer-substring (line-beginning-position)
+;;              (line-end-position)))
+;;          (forward-line)))
+;;          (when-let ((so (expand-file-name "./vterm-module.so"))
+;;           ((file-exists-p so)))
+;;          (make-symbolic-link
+;;            so (expand-file-name (file-name-nondirectory so)
+;;            "../../builds/vterm")
+;;            'ok-if-already-exists))))
+      :commands 
+      (vterm vterm-other-window)
+      :config   
+      (setq shell-file-name "/bin/fish" ;; sets default shell to fish
+        vterm-max-scrollback 5000 ;; sets max scroll back
+        vterm-shell "/bin/fish" ;; sets vterm shell to fish
+        vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
+      (evil-set-initial-state 'vterm-mode 'emacs))
 
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+;;toggle vterm
+(use-package vterm-toggle
+  :after vterm
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+    '((lambda (buffer-or-name _)
+      (let ((buffer (get-buffer buffer-or-name)))
+        (with-current-buffer buffer
+          (or (equal major-mode 'vterm-mode)
+            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+            (display-buffer-reuse-window display-buffer-at-bottom)
+            ;;(display-buffer-reuse-window display-buffer-in-direction)
+            ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+            ;;(direction . bottom)
+            ;;(dedicated . t) ;dedicated is supported in emacs27
+            (reusable-frames . visible)
+            (window-height . 0.3))))
