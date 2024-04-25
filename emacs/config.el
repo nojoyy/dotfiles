@@ -195,7 +195,6 @@
     (evil-collection-init))
 (use-package evil-tutor)
 
-(use-package seq)
 (use-package magit
   :after seq)
 (use-package git-commit
@@ -388,32 +387,32 @@
       org-hide-emphasis-markers t)
 
 (use-package vterm
-;;    :ensure (vterm :post-build
-;;      (progn
-;;       (setq vterm-always-compile-module t)
-;;       (require 'vterm)
-;;        ;;print compilation info for elpaca
-;;        (with-current-buffer (get-buffer-create vterm-install-buffer-name)
-;;          (goto-char (point-min))
-;;        (while (not (eobp))
-;;         (message "%S"
-;;            (buffer-substring (line-beginning-position)
-;;              (line-end-position)))
-;;          (forward-line)))
-;;          (when-let ((so (expand-file-name "./vterm-module.so"))
-;;           ((file-exists-p so)))
-;;          (make-symbolic-link
-;;            so (expand-file-name (file-name-nondirectory so)
-;;            "../../builds/vterm")
-;;            'ok-if-already-exists))))
-      :commands 
-      (vterm vterm-other-window)
-      :config   
-      (setq shell-file-name "/bin/fish" ;; sets default shell to fish
-        vterm-max-scrollback 5000 ;; sets max scroll back
-        vterm-shell "/bin/fish" ;; sets vterm shell to fish
-        vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
-      (evil-set-initial-state 'vterm-mode 'emacs))
+  :ensure (vterm :post-build
+    (progn
+     (setq vterm-always-compile-module t)
+     (require 'vterm)
+      ;;print compilation info for elpaca
+      (with-current-buffer (get-buffer-create vterm-install-buffer-name)
+        (goto-char (point-min))
+      (while (not (eobp))
+       (message "%S"
+          (buffer-substring (line-beginning-position)
+            (line-end-position)))
+       (forward-line)))
+        (when-let ((so (expand-file-name "./vterm-module.so"))
+         ((file-exists-p so)))
+        (make-symbolic-link
+          so (expand-file-name (file-name-nondirectory so)
+          "../../builds/vterm")
+          'ok-if-already-exists))))
+    :commands 
+    (vterm vterm-other-window)
+    :config   
+    (setq shell-file-name "/bin/fish" ;; sets default shell to fish
+      vterm-max-scrollback 5000 ;; sets max scroll back
+      vterm-shell "/bin/fish" ;; sets vterm shell to fish
+      vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
+    (evil-set-initial-state 'vterm-mode 'emacs))
 
 ;;toggle vterm
 (use-package vterm-toggle

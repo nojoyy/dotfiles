@@ -291,7 +291,6 @@ Vim emulation layer
 
 ** MAGIT
 #+begin_src emacs-lisp
-(use-package seq)
 (use-package magit
   :after seq)
 (use-package git-commit
