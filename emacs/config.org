@@ -637,9 +637,9 @@ Terminal Emulator
       :commands 
       (vterm vterm-other-window)
       :config   
-      (setq shell-file-name "/bin/fish" ;; sets default shell to fish
+      (setq shell-file-name "$SHELL" 
         vterm-max-scrollback 5000 ;; sets max scroll back
-        vterm-shell "/bin/fish" ;; sets vterm shell to fish
+        vterm-shell "$SHELL" 
         vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
       (evil-set-initial-state 'vterm-mode 'emacs))
 #+end_src
@@ -648,6 +648,7 @@ Terminal Emulator
 ;;toggle vterm
 (use-package vterm-toggle
   :after vterm
+  :after projectile
   :config
   (setq vterm-toggle-fullscreen-p nil)
   (setq vterm-toggle-scope 'project)
