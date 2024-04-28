@@ -34,16 +34,16 @@
 (general-create-definer dt/leader-keys
   :states '(normal insert visual emacs)
   :keymaps 'override
-  :prefix "." ;; set leader
-  :global-prefix "C-.") ;; access leader in insert mode
+  :prefix "SPC" ;; set leader
+  :global-prefix "C-SPC") ;; access leader in insert mode
 
 ;; nav and command keybinds
 (dt/leader-keys
-  "/" '(counsel-M-x :wk "Meta-x")
-  ">" '(:ignore t :wk "goto")
-  "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto Emacs Config")
-  "> r" '(counsel-recentf :wk "goto recent files")
-  "> /" '(find-file :wk "goto file")
+  "x" '(counsel-M-x :wk "command")
+  "/" '(find-file :wk "goto file")
+  ">" '(:ignore :wk "goto")
+  "> r" '(counsel-recentf :wk "goto recent file")
+  "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
   "TAB TAB" '(comment-line :wk "comment lines"))
 
 ;; buffer keybinds
@@ -75,7 +75,6 @@
 ;; toggle keybinds
 (dt/leader-keys
   "t" '(:ignore t :wk "toggle")
-  "t l" '(display-line-numbers-mode :wk "toggle line numbers")
   "t v" '(vterm-toggle :wk "toggle vterm")
   "t t" '(visual-line-mode :wk "Toggle truncated lines")
   "t n" '(neotree-toggle :wk "Toggle neotree file viewer"))
@@ -183,10 +182,11 @@
 
 (use-package evil
   :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-vsplit-window-right t)
-  (setq evil-split-window-below t)
+  (setq evil-want-integration t
+  evil-want-keybinding nil
+  evil-vsplit-window-right t
+  evil-split-window-below t
+  evil-want-Y-yank-to-eol t)
   (evil-mode))
 (use-package evil-collection ;; Keybind collection
     :after evil
@@ -199,6 +199,31 @@
   :after seq)
 (use-package git-commit
   :after seq)
+
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
+  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
+
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+
+(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+
+(setq org-edit-src-content-indentation 0)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(require 'org-tempo) ;; quick blocks
+
+(setq org-ellipsis " ⇁" 
+      org-hide-emphasis-markers t)
 
 (use-package company
   :defer 2
@@ -322,23 +347,22 @@
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
 
-;; disable menu bar
+;; disable gui bars
 (menu-bar-mode -1)
-
-;; disable tool bar
 (tool-bar-mode -1)
-
-;; disable scroll bar
 (scroll-bar-mode -1)
 
 ;; disable startup screen
 (setq inhibit-startup-screen t)  
 
-;; display line numbers by default
-(global-display-line-numbers-mode)
-
 ;; display truncated lines by default
 (global-visual-line-mode t)
+
+;; displat line numbers by default
+(global-display-line-numbers-mode)
+
+;; relative line numbering
+(setq display-line-numbers-type 'relative)
 
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -360,31 +384,6 @@
   (dt/leader-keys
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
-
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
-  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
-
-(use-package org-auto-tangle
-  :defer t
-  :hook (org-mode . org-auto-tangle-mode))
-
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-
-(setq org-edit-src-content-indentation 0)
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-(require 'org-tempo) ;; quick blocks
-
-(setq org-ellipsis " ⇁" 
-      org-hide-emphasis-markers t)
 
 (use-package vterm
   :ensure (vterm :post-build
