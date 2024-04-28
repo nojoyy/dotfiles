@@ -36,8 +36,6 @@
   - [[#rainbow-mode][Rainbow Mode]]
   - [[#tweaks][Tweaks]]
   - [[#zoom][Zoom]]
-- [[#hooks][HOOKS]]
-  - [[#kill-emacs-hook][Kill Emacs Hook]]
 - [[#misc-packages][MISC PACKAGES]]
   - [[#projectile][Projectile]]
   - [[#recentf][Recentf]]
@@ -264,6 +262,7 @@ Generic completion mechanism for prompts
 Vim emulation layer
 #+begin_src emacs-lisp
 (use-package evil
+  :hook ((prog-mode text-mode) . display-line-numbers-mode)
   :init
   (setq evil-want-integration t
   evil-want-keybinding nil
@@ -545,9 +544,6 @@ Various GUI tweaks and settings
 ;; display truncated lines by default
 (global-visual-line-mode t)
 
-;; displat line numbers by default
-(global-display-line-numbers-mode)
-
 ;; relative line numbering
 (setq display-line-numbers-type 'relative)
 #+end_src
@@ -559,14 +555,6 @@ Zoom keybindings
   (global-set-key (kbd "C--") 'text-scale-decrease)
   (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
   (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-#+end_src
-
-
-* HOOKS
-** Kill Emacs Hook
-Save recents on kill
-#+begin_src
-(add-hook 'kill-emacs-hook (recentf-save-list))
 #+end_src
 
 
@@ -603,33 +591,33 @@ Allow for buffers to be written to using sudo
 Terminal Emulator
 ** Enable
 #+begin_src emacs-lisp
-  (use-package vterm
-    :ensure (vterm :post-build
-      (progn
-       (setq vterm-always-compile-module t)
-       (require 'vterm)
-        ;;print compilation info for elpaca
-        (with-current-buffer (get-buffer-create vterm-install-buffer-name)
-          (goto-char (point-min))
-        (while (not (eobp))
-         (message "%S"
-            (buffer-substring (line-beginning-position)
-              (line-end-position)))
-         (forward-line)))
-          (when-let ((so (expand-file-name "./vterm-module.so"))
-           ((file-exists-p so)))
-          (make-symbolic-link
-            so (expand-file-name (file-name-nondirectory so)
-            "../../builds/vterm")
-            'ok-if-already-exists))))
-      :commands 
-      (vterm vterm-other-window)
-      :config   
-      (setq shell-file-name "$SHELL" 
-        vterm-max-scrollback 5000 ;; sets max scroll back
-        vterm-shell "$SHELL" 
-        vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
-      (evil-set-initial-state 'vterm-mode 'emacs))
+(use-package vterm
+  :ensure (vterm :post-build
+    (progn
+     (setq vterm-always-compile-module t)
+     (require 'vterm)
+      ;;print compilation info for elpaca
+      (with-current-buffer (get-buffer-create vterm-install-buffer-name)
+        (goto-char (point-min))
+      (while (not (eobp))
+       (message "%S"
+          (buffer-substring (line-beginning-position)
+            (line-end-position)))
+       (forward-line)))
+        (when-let ((so (expand-file-name "./vterm-module.so"))
+         ((file-exists-p so)))
+        (make-symbolic-link
+          so (expand-file-name (file-name-nondirectory so)
+          "../../builds/vterm")
+          'ok-if-already-exists))))
+    :commands 
+    (vterm vterm-other-window)
+    :config   
+    (setq shell-file-name "$SHELL" 
+      vterm-max-scrollback 5000 ;; sets max scroll back
+      vterm-shell "$SHELL" 
+      vterm-kill-buffer-on-exit t) ;; enables kill buffer on exit
+    (evil-set-initial-state 'vterm-mode 'emacs))
 #+end_src
 ** V-Term Toggle
 #+begin_src emacs-lisp

@@ -181,6 +181,7 @@
    ivy-rich-path-style 'abbrev))
 
 (use-package evil
+  :hook ((prog-mode text-mode) . display-line-numbers-mode)
   :init
   (setq evil-want-integration t
   evil-want-keybinding nil
@@ -358,9 +359,6 @@
 
 ;; display truncated lines by default
 (global-visual-line-mode t)
-
-;; displat line numbers by default
-(global-display-line-numbers-mode)
 
 ;; relative line numbering
 (setq display-line-numbers-type 'relative)
