@@ -195,6 +195,7 @@
     (evil-collection-init))
 (use-package evil-tutor)
 
+(use-package transient)
 (use-package magit
   :after seq)
 (use-package git-commit
