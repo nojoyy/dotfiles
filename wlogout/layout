@@ -6,31 +6,31 @@
 }
 {
     "label" : "hibernate",
-    "action" : "systemctl hibernate",
+    "action" : "systemctl --user stop emacs; sleep 1; systemctl hibernate",
     "text" : "Hibernate",
     "keybind" : "h"
 }
 {
     "label" : "logout",
-    "action" : "sleep 1; hyprctl dispatch exit",
+    "action" : "systemctl --user stop emacs; sleep 1; hyprctl dispatch exit",
     "text" : "Logout",
     "keybind" : "e"
 }
 {
     "label" : "shutdown",
-    "action" : "systemctl poweroff",
+    "action" : "systemctl --user stop emacs; sleep 1; systemctl poweroff",
     "text" : "Shutdown",
     "keybind" : "s"
 }
 {
     "label" : "suspend",
-    "action" : "systemctl suspend",
+    "action" : "systemctl --user stop emacs; sleep 1; systemctl suspend",
     "text" : "Suspend",
     "keybind" : "u"
 }
 {
     "label" : "reboot",
-    "action" : "systemctl reboot",
+    "action" : "systemctl --user stop emacs; sleep 1; systemctl reboot",
     "text" : "Reboot",
     "keybind" : "r"
 }

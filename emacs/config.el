@@ -428,11 +428,13 @@
   (projectile-mode 1))
 (setq projectile-project-search-path '("~/projects/"))
 
-(require 'recentf)
-(recentf-mode 1)
-(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-(add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
-(add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
+(use-package recentf
+  :config
+  (recentf-mode 1)
+  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+  (add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
+  (add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
+  (add-hook 'kill-emacs-hook 'recentf-save-list))
 
 (use-package sudo-edit
   :config
