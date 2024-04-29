@@ -7,12 +7,12 @@ Welcome to my personal dotfiles, here is a programs you will need to use everyth
 - emacs
 - fish
 - neofetch
-- kitty
+- foot
 - hyprland
 - hyprpaper
+- hyprlock
 - waybar
 - tofi
 - dunst
-- lib-notify
 - zoxide
 
