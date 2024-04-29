@@ -237,6 +237,8 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
+
+
 (use-package rjsx-mode
   :mode "\\.js\\'"
   :mode "\\.ts\\'"
@@ -298,7 +300,6 @@
   (setq dashboard-set-file-icons t)
   (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
   (setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-  ;;(setq dashboard-startup-banner "/home/dt/.config/emacs/images/emacs-dash.png")  ;; use custom image as banner
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-items '((recents . 8)
@@ -310,6 +311,8 @@
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book")))
   :config
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dahboard-initialize)
   (dashboard-setup-startup-hook))
 
 (use-package doom-modeline
@@ -355,7 +358,7 @@
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (setq treemacs-width 35)
+    (setq treemacs-width 28)
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (when treemacs-python-executable
@@ -428,13 +431,12 @@
   (projectile-mode 1))
 (setq projectile-project-search-path '("~/projects/"))
 
-(use-package recentf
-  :config
-  (recentf-mode 1)
-  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-  (add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
-  (add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
-  (add-hook 'kill-emacs-hook 'recentf-save-list))
+(require 'recentf)
+(recentf-mode 1)
+(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+(add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
+(add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
+(add-hook 'kill-emacs-hook 'recentf-save-list)
 
 (use-package sudo-edit
   :config

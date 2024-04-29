@@ -333,6 +333,11 @@ Requires python-pylint for python support
 (use-package nix-mode
   :mode "\\.nix\\'")
 #+end_src
+*** nXML Mode
+Better ML support
+#+begin_src emacs-lisp
+
+#+end_src
 *** JS/TS/X Support
 #+begin_src emacs-lisp
 (use-package rjsx-mode
@@ -439,7 +444,6 @@ Emacs dahboard/launcher page
   (setq dashboard-set-file-icons t)
   (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
   (setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-  ;;(setq dashboard-startup-banner "/home/dt/.config/emacs/images/emacs-dash.png")  ;; use custom image as banner
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-items '((recents . 8)
@@ -451,6 +455,8 @@ Emacs dahboard/launcher page
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book")))
   :config
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dahboard-initialize)
   (dashboard-setup-startup-hook))
 #+end_src
 
@@ -515,7 +521,7 @@ General UI Font Config
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (setq treemacs-width 35)
+    (setq treemacs-width 28)
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (when treemacs-python-executable
@@ -612,13 +618,12 @@ Allows for project support - needed for Dashboard
 ** Recentf
 Recent file list - add exclusions here
 #+begin_src emacs-lisp
-(use-package recentf
-  :config
-  (recentf-mode 1)
-  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-  (add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
-  (add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
-  (add-hook 'kill-emacs-hook 'recentf-save-list))
+(require 'recentf)
+(recentf-mode 1)
+(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+(add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
+(add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
+(add-hook 'kill-emacs-hook 'recentf-save-list)
 #+end_src
 ** Sudo Edit
 Allow for buffers to be written to using sudo
