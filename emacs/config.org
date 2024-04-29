@@ -15,16 +15,14 @@
 - [[#interaction][INTERACTION]]
   - [[#keybinds][KEYBINDS]]
   - [[#ivy-counsel][IVY (COUNSEL)]]
+  - [[#misc][MISC]]
 - [[#modes][MODES]]
+  - [[#company][COMPANY]]
   - [[#evil][EVIL]]
+  - [[#flycheck][FLYCHECK]]
+  - [[#non-native-language-modes][NON-NATIVE LANGUAGE MODES]]
   - [[#magit][MAGIT]]
   - [[#org][ORG]]
-- [[#programming-language-support][PROGRAMMING LANGUAGE SUPPORT]]
-  - [[#company][Company]]
-  - [[#flycheck][Flycheck]]
-  - [[#non-native-language-modes][Non Native Language Modes]]
-- [[#git][GIT]]
-  - [[#git-time-machine][Git Time Machine]]
 - [[#gui][GUI]]
   - [[#all-the-icons][All The Icons]]
   - [[#dashboard][Dashboard]]
@@ -154,12 +152,20 @@ Keybind definitions
   "w s" '(evil-window-split :wk "split window")
   "w v" '(evil-window-vsplit :wk "split window vertical")
   ;; move
+  "w j" '(evil-window-up :wk "window up")
+  "w k" '(evil-window-down :wk "window down")
+  "w h" '(evil-window-left :wk "window left")
+  "w l" '(evil-window-right :wk "window right")
   "w <up>" '(evil-window-up :wk "window up")
   "w <down>" '(evil-window-down :wk "window down")
   "w <left>" '(evil-window-left :wk "window left")
   "w <right>" '(evil-window-right :wk "window right")
   "w >" '(evil-window-next :wk "window next")
   ;; swaps
+  "w C-j" '(buf-move-up :wk "window swap up")
+  "w C-k" '(buf-move-down :wk "window swap down")
+  "w C-h" '(buf-move-left :wk "window swap left")
+  "w C-l" '(buf-move-right :wk "window swap right")
   "w C-<up>" '(buf-move-up :wk "window swap up")
   "w C-<down>" '(buf-move-down :wk "window swap down")
   "w C-<left>" '(buf-move-left :wk "window swap left")
@@ -168,11 +174,15 @@ Keybind definitions
 ;; git/magit
 (dt/leader-keys
   "g" '(:ignore t :wk "git")
-  "g s" '(magit-status :wk "git status"))
+  "g s" '(magit-status :wk "git status")
+  "g t" ' (git-timemachine :wk "git timemachine"))
 
 ;; org mode
 (dt/leader-keys
-  "o" '(:ignore t :wk "org mode"))
+  "o" '(:ignore t :wk "org mode")
+  "o e" '(org-edit-special :wk "org edit")
+  "o s" '(org-edit-src-exit :wk "org exit edit")
+  "o c" '(org-edit-src-abort :wk "org abort edit"))
 
 ;; server
 (dt/leader-keys
@@ -256,8 +266,33 @@ Generic completion mechanism for prompts
    ivy-rich-path-style 'abbrev))
 #+end_src
 
+** MISC
+#+begin_src emacs-lisp
+(global-set-key [escape] 'keyboard-escape-quit)
+#+end_src
+
 
 * MODES
+** COMPANY
+Smart auto-complete tool
+#+begin_src emacs-lisp
+(use-package company
+  :defer 2
+  :diminish
+  :custom
+  (company-begin-commands '(self-insert-command))
+  (company-idle-delay .1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations 't)
+  (global-company-mode t))
+
+(use-package company-box
+  :after company
+  :diminish
+  :hook (company-mode . company-box-mode))
+#+end_src
+
 ** EVIL
 Vim emulation layer
 #+begin_src emacs-lisp
@@ -278,6 +313,35 @@ Vim emulation layer
 (use-package evil-tutor)
 #+end_src
 
+** FLYCHECK
+On the fly error checking and syntax highlighting
+Requires python-pylint for python support
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :defer t
+  :diminish
+  :init (global-flycheck-mode))
+#+end_src
+** NON-NATIVE LANGUAGE MODES
+*** Rust
+#+begin_src emacs-lisp
+(use-package rust-mode)
+#+end_src
+*** Nix
+#+begin_src emacs-lisp
+(use-package nix-mode
+  :mode "\\.nix\\'")
+#+end_src
+*** JS/TS/X Support
+#+begin_src emacs-lisp
+(use-package rjsx-mode
+  :mode "\\.js\\'"
+  :mode "\\.ts\\'"
+  :mode "\\.jsx\\'"
+  :mode "\\.tsx\\'")
+#+end_src
+
 ** MAGIT
 #+begin_src emacs-lisp
 (use-package transient)
@@ -286,13 +350,24 @@ Vim emulation layer
 (use-package git-commit
   :after seq)
 #+end_src
+*** Git Time Machine
+Allows for easy review of past commits
+#+begin_src emacs-lisp
+(use-package git-timemachine
+  :after magit
+  :hook (evil-normalize-keymaps . git-timemachine-hook)
+  :config
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
+)
+#+end_src
 ** ORG
 Packages and settings for org-mode
 *** Appearance
 #+begin_src emacs-lisp
 (custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
-  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
+ '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
+ '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
 #+end_src
 *** Auto Tangle
 Auto tangle source block on save
@@ -301,17 +376,12 @@ Auto tangle source block on save
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
 #+end_src
-*** Diminish Org Indent
+*** Org Hooks
 #+begin_src emacs-lisp
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-#+end_src
-*** Disable Poor Indenting
-#+begin_src emacs-lisp
-(setq org-edit-src-content-indentation 0)
+(add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
 *** Enabling Bullets
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'org-indent-mode)
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
@@ -339,74 +409,13 @@ Disabled
 Various Visual Tweaks
 #+begin_src emacs-lisp
 (setq org-ellipsis " ⇁" 
-      org-hide-emphasis-markers t)
+      org-hide-emphasis-markers t
+       org-src-fontify-natively t
+       org-src-tab-acts-natively t
+       org-src-preserve-indentation nil
+       org-edit-src-content-indentation 0
+       evil-want-C-i-jump nil)
 #+end_src
-
-
-* PROGRAMMING LANGUAGE SUPPORT
-Support for programming languages and tools
-** Company
-Smart auto-complete tool
-#+begin_src emacs-lisp
-(use-package company
-  :defer 2
-  :diminish
-  :custom
-  (company-begin-commands '(self-insert-command))
-  (company-idle-delay .1)
-  (company-minimum-prefix-length 2)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  (global-company-mode t))
-
-(use-package company-box
-  :after company
-  :diminish
-  :hook (company-mode . company-box-mode))
-#+end_src
-
-** Flycheck
-On the fly error checking and syntax highlighting
-Requires python-pylint for python support
-#+begin_src emacs-lisp
-(use-package flycheck
-  :ensure t
-  :defer t
-  :diminish
-  :init (global-flycheck-mode))
-#+end_src
-** Non Native Language Modes
-*** Rust
-#+begin_src emacs-lisp
-(use-package rust-mode)
-#+end_src
-*** Nix
-#+begin_src emacs-lisp
-(use-package nix-mode
-  :mode "\\.nix\\'")
-#+end_src
-*** JS/TS/X Support
-#+begin_src emacs-lisp
-(use-package rjsx-mode
-  :mode "\\.js\\'"
-  :mode "\\.ts\\'"
-  :mode "\\.jsx\\'"
-  :mode "\\.tsx\\'")
-#+end_src
-
-
-* GIT
-** Git Time Machine
-Use VC to view commit history for a file
-/#+begin_src emacs-lisp
-(use-package git-timemachine
-  :after git-timemachine
-  :hook (evil-normalize-keymaps . git-timemachine-hook)
-  :config
-    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
-    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
-)
-/#+end_src
 
 
 * GUI
@@ -551,10 +560,10 @@ Various GUI tweaks and settings
 ** Zoom
 Zoom keybindings
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-=") 'text-scale-increase)
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-  (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-  (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 #+end_src
 
 
@@ -642,5 +651,6 @@ Terminal Emulator
             (reusable-frames . visible)
             (window-height . 0.3))))
 #+end_src
+
 
 

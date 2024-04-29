@@ -88,12 +88,20 @@
   "w s" '(evil-window-split :wk "split window")
   "w v" '(evil-window-vsplit :wk "split window vertical")
   ;; move
+  "w j" '(evil-window-up :wk "window up")
+  "w k" '(evil-window-down :wk "window down")
+  "w h" '(evil-window-left :wk "window left")
+  "w l" '(evil-window-right :wk "window right")
   "w <up>" '(evil-window-up :wk "window up")
   "w <down>" '(evil-window-down :wk "window down")
   "w <left>" '(evil-window-left :wk "window left")
   "w <right>" '(evil-window-right :wk "window right")
   "w >" '(evil-window-next :wk "window next")
   ;; swaps
+  "w C-j" '(buf-move-up :wk "window swap up")
+  "w C-k" '(buf-move-down :wk "window swap down")
+  "w C-h" '(buf-move-left :wk "window swap left")
+  "w C-l" '(buf-move-right :wk "window swap right")
   "w C-<up>" '(buf-move-up :wk "window swap up")
   "w C-<down>" '(buf-move-down :wk "window swap down")
   "w C-<left>" '(buf-move-left :wk "window swap left")
@@ -102,11 +110,15 @@
 ;; git/magit
 (dt/leader-keys
   "g" '(:ignore t :wk "git")
-  "g s" '(magit-status :wk "git status"))
+  "g s" '(magit-status :wk "git status")
+  "g t" ' (git-timemachine :wk "git timemachine"))
 
 ;; org mode
 (dt/leader-keys
-  "o" '(:ignore t :wk "org mode"))
+  "o" '(:ignore t :wk "org mode")
+  "o e" '(org-edit-special :wk "org edit")
+  "o s" '(org-edit-src-exit :wk "org exit edit")
+  "o c" '(org-edit-src-abort :wk "org abort edit"))
 
 ;; server
 (dt/leader-keys
@@ -180,52 +192,7 @@
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev))
 
-(use-package evil
-  :hook ((prog-mode text-mode) . display-line-numbers-mode)
-  :init
-  (setq evil-want-integration t
-  evil-want-keybinding nil
-  evil-vsplit-window-right t
-  evil-split-window-below t
-  evil-want-Y-yank-to-eol t)
-  (evil-mode))
-(use-package evil-collection ;; Keybind collection
-    :after evil
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer))
-    (evil-collection-init))
-(use-package evil-tutor)
-
-(use-package transient)
-(use-package magit
-  :after seq)
-(use-package git-commit
-  :after seq)
-
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
-  '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
-
-(use-package org-auto-tangle
-  :defer t
-  :hook (org-mode . org-auto-tangle-mode))
-
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-
-(setq org-edit-src-content-indentation 0)
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-(require 'org-tempo) ;; quick blocks
-
-(setq org-ellipsis " ⇁" 
-      org-hide-emphasis-markers t)
+(global-set-key [escape] 'keyboard-escape-quit)
 
 (use-package company
   :defer 2
@@ -243,6 +210,22 @@
   :diminish
   :hook (company-mode . company-box-mode))
 
+(use-package evil
+  :hook ((prog-mode text-mode) . display-line-numbers-mode)
+  :init
+  (setq evil-want-integration t
+  evil-want-keybinding nil
+  evil-vsplit-window-right t
+  evil-split-window-below t
+  evil-want-Y-yank-to-eol t)
+  (evil-mode))
+(use-package evil-collection ;; Keybind collection
+    :after evil
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer))
+    (evil-collection-init))
+(use-package evil-tutor)
+
 (use-package flycheck
   :ensure t
   :defer t
@@ -259,6 +242,47 @@
   :mode "\\.ts\\'"
   :mode "\\.jsx\\'"
   :mode "\\.tsx\\'")
+
+(use-package transient)
+(use-package magit
+  :after seq)
+(use-package git-commit
+  :after seq)
+
+(use-package git-timemachine
+  :after magit
+  :hook (evil-normalize-keymaps . git-timemachine-hook)
+  :config
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
+)
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :extend nil :weight medium :height 1.35))))
+ '(org-level-2 (( t (:inhering outline-2 :extend nil :height 1.15)))))
+
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(require 'org-tempo) ;; quick blocks
+
+(setq org-ellipsis " ⇁" 
+      org-hide-emphasis-markers t
+       org-src-fontify-natively t
+       org-src-tab-acts-natively t
+       org-src-preserve-indentation nil
+       org-edit-src-content-indentation 0
+       evil-want-C-i-jump nil)
 
 (use-package all-the-icons
   :ensure t
