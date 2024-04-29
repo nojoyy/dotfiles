@@ -349,6 +349,7 @@
 
 (use-package treemacs
   :defer t
+  :diminish
   :init
   (with-eval-after-load 'winum
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
@@ -429,7 +430,9 @@
 
 (require 'recentf)
 (recentf-mode 1)
-(add-to-list 'recentf-exclude "/home/noah/.config/emacs/bookmarks")
+(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+(add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
+(add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
 
 (use-package sudo-edit
   :config
