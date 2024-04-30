@@ -2,7 +2,7 @@
 #+AUTHOR: Noah Joyner
 #+DESCRIPTION: Personal Hyprland Config: https://wiki.hyprland.org/Useful-Utilities/
 #+AUTO_TANGLE: t
-#+PROPERTY: header-args :tangle hyprland.conf
+#+PROPERTY: header-args :tangle external.conf
 
 * Setup
 ** Monitor Setup
@@ -13,7 +13,7 @@ source = ~/.config/hypr/monitors.conf
 ** Set Default Programs
 #+begin_src hypr
 $terminal = footclient
-$fileManager = thunar
+$fileManager = pcmanfm
 $dmenu = tofi-drun | xargs hyprctl dispatch exec --
 $menu = tofi-run | xargs hyprctl dispatch exec -- 
 $waybar = ~/.config/waybar/launch.sh

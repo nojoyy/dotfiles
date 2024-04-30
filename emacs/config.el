@@ -43,6 +43,7 @@
   "/" '(find-file :wk "goto file")
   ">" '(:ignore :wk "goto")
   "> r" '(counsel-recentf :wk "goto recent file")
+  "> m" '(counsel-bookmark :wk "goto bookmark")
   "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
   "TAB TAB" '(comment-line :wk "comment lines"))
 
@@ -445,6 +446,7 @@
     "s ." '(sudo-edit :wk "sudo edit current file")))
 
 (use-package vterm
+  :after projectile
   :ensure (vterm :post-build
     (progn
      (setq vterm-always-compile-module t)

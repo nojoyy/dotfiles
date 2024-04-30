@@ -11,5 +11,6 @@ emacs/eln-cache
 hypr/monitors.conf
 hypr/hyprpaper.conf
 hypr/hyprlock.conf
+hypr/hyprland.conf
 
 fish/splash.txt
