@@ -327,10 +327,10 @@
   :config
   (setq doom-themes-enable-bold t
     doom-themes-enable-italic t)
-  (load-theme 'doom-tokyo-night t))
+  (load-theme 'doom-horizon t))
   
 ;; Transparency
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+;; (add-to-list 'default-frame-alist '(alpha-background . 90))
 
 ;;create font default
 (set-face-attribute 'default nil
@@ -346,7 +346,7 @@
   :slant 'italic)
 
 ;;add font to default
-(add-to-list 'default-frame-alist '(font . "FiraCode-11"))
+(add-to-list 'default-frame-alist '(font . "FiraCode-12"))
 
 ;;set line spacing
 (setq-default line-spacing 0.15)
