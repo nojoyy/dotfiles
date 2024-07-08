@@ -1,12 +1,16 @@
 emacs/bookmarks
 emacs/projectile-bookmarks.eld
 emacs/recentf
+emacs/.lsp-session-v1
+emacs/.dap-breakpoints
+emacs/projectile.cache
 
 emacs/.cache
 emacs/auto-save-list
 emacs/elpaca
 emacs/transient
 emacs/eln-cache
+emacs/ellama-sessions
 
 hypr/monitors.conf
 hypr/hyprpaper.conf

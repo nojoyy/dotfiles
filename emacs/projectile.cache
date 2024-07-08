@@ -1,1 +1,0 @@
-#s(hash-table test equal data ("/home/noah/projects/react/layout-app/" ("src/features/placeable/Placeable.tsx" "src/features/placeable") "/home/noah/.nixos/" ("nixosModules/obs.nix")))
