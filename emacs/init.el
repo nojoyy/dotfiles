@@ -1,19 +1,22 @@
-;; Initialize package sources
-(require 'package)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+      "straight/repos/straight.el/bootstrap.el"
+      (or (bound-and-true-p straight-base-dir)
+  	  user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+       'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-;; (unless package-archive-contents
-;;   (package-refresh-contents))
-
-(require 'use-package)
-
-;; Uncomment this to get a reading on packages that get loaded at startup
-;;(setq use-package-verbose t)
+;; Set up use-package to use straight.el
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -29,7 +32,9 @@
       evil-respect-visual-line-mode t
       evil-want-Y-yank-to-eol t)
   (evil-mode))
-(use-package evil-collection ;; Keybind collection
+
+;; Keybind collection for evil
+(use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
@@ -52,16 +57,6 @@
   :config
   (ivy-mode 1))
 
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init (all-the-icons-ivy-rich-mode 1))
-
-(use-package ivy-rich
-  :after ivy
-  :after all-the-icons-ivy-rich
-  :ensure t
-  :init (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
-
 (use-package counsel
   :diminish
   :after ivy
@@ -70,6 +65,17 @@
        ("C-x C-f" . counsel-find-file)
        :map minibuffer-local-map
        ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :after ivy
+  :after all-the-icons-ivy-rich
+  :after counsel
+  :ensure t
+  :init (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
 
 (use-package helpful
   :custom
@@ -214,10 +220,6 @@
 
 (use-package hydra)
 
-;; Zoom in editor
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-
 (require 'recentf)
 (recentf-mode 1)
 (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
@@ -312,6 +314,10 @@
 ;; relative line numbering
 (setq display-line-numbers-type 'relative)
 
+;; zoom on scroll
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+
 (use-package ellama
   :init
   (setopt ellama-keymap-prefix "C-c e")
@@ -363,6 +369,8 @@
   :config
   (setq typescript-indent-level 2))
 
+
+
 ;; ;; TypeScript Interactive Development Environment
 (use-package tide
   :ensure t
@@ -370,7 +378,8 @@
   :hook
   (typescript-ts-mode . tide-setup)
   (tsx-ts-mode . tide-setup)
-  (typescript-ts-mode . tide-hl-identifier-mode))
+  (typescript-ts-mode . tide-hl-identifier-mode)
+  (tide-mode . electric-pair-mode))
 
 (setq company-tooltip-align-annotations t)
 
@@ -435,8 +444,6 @@
   :after (treemacs all-the-icons)
   :config (treemacs-load-theme "all-the-icons"))
 
-(electric-pair-mode 1)
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -457,11 +464,13 @@
 (use-package org
   :hook (org-mode . org-indent-mode)
   :config
+  ;; Tweaks
    (setq org-ellipsis " ⇁" 
          org-hide-emphasis-markers nil
          org-src-fontify-natively t
          org-src-tab-acts-natively t)
-   ;; org mode
+   (require 'org-tempo) ;; allows for quick block execution
+   ;; Keybinds
     (nj/leader-keys
       "o" '(:ignore t :wk "org mode")
       "o e" '(org-edit-special :wk "org edit")
@@ -478,25 +487,4 @@
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (use-package toc-org
-  :hook (org-mode . 'toc-org-enable)
-    :commands toc-org-enable)
-
-(require 'org-tempo) ;; quick blocks
-
-;; Set faces for heading levels
- (dolist (face '((org-level-1 . 1.25)
-                 (org-level-2 . 1.2)
-                 (org-level-3 . 1.15)
-                 (org-level-4 . 1.1)
-                 (org-level-5 . 1.0)
-                 (org-level-6 . 1.0)
-                 (org-level-7 . 1.0)
-                 (org-level-8 . 1.0))))
-
-(defun nwj/org-mode-visual-fill ()
-  (setq visual-fill-column-width 180
-        visual-fill-column-center-text t)
-  (visual-fill-column-mode 1))
-
-(use-package visual-fill-column
-  :hook (org-mode . nwj/org-mode-visual-fill))
+  :hook (org-mode . toc-org-mode))
