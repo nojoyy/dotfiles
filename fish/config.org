@@ -5,10 +5,9 @@
 #+OPTIONS: toc:2
 #+PROPERTY: header-args :tangle config.fish
 
-* PATH
-** Adding Deno to Path
+* ALIASES
 #+begin_src sh
-fish_add_path /home/noah/.deno
+alias ls="lsd"
 #+end_src
 
 * VARS
@@ -135,7 +134,6 @@ function fish_greeting
 end
 #+end_src
 
-
 * REQUIRED
 #+begin_src sh
 if status is-interactive
@@ -148,4 +146,5 @@ Adding zoxide, a smarter cd command
 Must be at end
 #+begin_src sh
 zoxide init fish | source
+starship init fish | source
 #+end_src

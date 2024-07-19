@@ -1,4 +1,4 @@
-fish_add_path /home/noah/.deno
+alias ls="lsd"
 
 set fonts "slant" "shadow"
 
@@ -98,3 +98,4 @@ if status is-interactive
 end
 
 zoxide init fish | source
+starship init fish | source

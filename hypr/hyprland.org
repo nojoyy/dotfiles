@@ -13,6 +13,7 @@ source = ~/.config/hypr/monitors.conf
 ** Set Default Programs
 #+begin_src hypr
 $terminal = footclient
+$browser = librewolf
 $fileManager = pcmanfm
 $dmenu = tofi-drun | xargs hyprctl dispatch exec --
 $menu = tofi-run | xargs hyprctl dispatch exec -- 
@@ -60,8 +61,8 @@ env = QT_QPA_PLATFORMTHEME,qt6ct
 general {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
-    gaps_in = 8
-    gaps_out = 8
+    gaps_in = 6
+    gaps_out = 6
     border_size = 2
     col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
     col.inactive_border = rgba(595959aa)
@@ -162,7 +163,7 @@ $mainMod = SUPER
 ** Launch Applications
 #+begin_src hypr
 bind = $mainMod, Q, exec, $terminal
-bind = $mainMod, B, exec, firefox
+bind = $mainMod, B, exec, $browser
 bind = $mainMod, F, exec, $fileManager
 
 bind = $mainMod, R, exec, $dmenu
