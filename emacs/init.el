@@ -18,11 +18,6 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
 (use-package evil
   :hook ((prog-mode text-mode) . display-line-numbers-mode)
   :init
@@ -31,13 +26,67 @@
       evil-want-C-i-jump nil
       evil-respect-visual-line-mode t
       evil-want-Y-yank-to-eol t)
-  (evil-mode))
+  (evil-mode)
+  :config
+(global-set-key (kbd "C-<tab>") 'evil-window-next)
+(global-set-key (kbd "M-<tab>") 'evil-buffer))
 
 ;; Keybind collection for evil
 (use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
+
+(use-package general
+  :config
+  (general-evil-setup)
+
+  (general-define-key
+   "C-=" 'text-scale-increase
+   "C--" 'text-scale-decrease)
+
+  ;; leader key definer
+  (general-create-definer nj/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "C-SPC") ;; non evil buffers
+
+  ;; nav and command keybinds
+  (nj/leader-keys
+    "x" '(counsel-M-x :wk "command")
+    "/" '(find-file :wk "goto file")
+    ">" '(:ignore t :wk "goto")
+    "> r" '(counsel-recentf :wk "goto recent file")
+    "> m" '(counsel-bookmark :wk "goto bookmark")
+    "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
+    "TAB TAB" '(comment-line :wk "comment lines"))
+
+  ;; buffer keybinds
+  (nj/leader-keys
+    "b" '(:ignore t :wk "buffer")
+    "b b" '(counsel-switch-buffer :wk "switch to buffer")
+    "b i" '(ibuffer :wk "ibuffer")
+    "b k" '(kill-this-buffer :wk "kill buffer")
+    "b n" '(next-buffer :wk "next buffer")
+    "b p" '(previous-buffer :wk "previous buffer")
+    "b r" '(revert-buffer :wk "reload buffer"))
+
+  ;; bookmarks
+  (nj/leader-keys
+    "m" '(:ignore t :wk "bookmarks")
+    "m d" '(bookmark-delete :wk "delete bookmark")
+    "m l" '(bookmark-bmenu-list :wk "bookmark list")
+    "m m" '(bookmark-set :wk "add bookmark")
+    "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark")))
+
+(use-package which-key
+  :diminish
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-idle-delay 0.8
+      which-key-allow-imprecise-window-fit nil))
 
 (use-package ivy
   :diminish
@@ -85,7 +134,12 @@
   ([remap describe-function] . counsel-describe-function)
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+  ([remap describe-key] . helpful-key)
+  :config
+  (nj/leader-keys
+    "h" '(:ignore t :wk "help")
+    "h f" '(describe-function :wk "describe function")
+    "h v" '(describe-variable :wk "describe variable")))
 
 (use-package company
   :defer 2
@@ -103,133 +157,21 @@
   :diminish
   :hook (company-mode . company-box-mode))
 
-(use-package general
-  :config
-  (general-evil-setup)
-
-  (general-define-key
-   "C-=" 'text-scale-increase
-   "C--" 'text-scale-decrease)
-
-  ;; fast arrow scrolling
-  (general-def 'normal
-    "C-<up>" 'evil-backwards-paragraph
-    "C-<down>" 'evil-forwards-paragraph
-    "C-<right>" 'evil-end-of-line
-    "C-<left>" 'back-to-indentation)
-
-  (general-create-definer nj/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  ;; nav and command keybinds
-  (nj/leader-keys
-    "x" '(counsel-M-x :wk "command")
-    "/" '(find-file :wk "goto file")
-    ">" '(:ignore :wk "goto")
-    "> r" '(counsel-recentf :wk "goto recent file")
-    "> m" '(counsel-bookmark :wk "goto bookmark")
-    "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
-    "TAB TAB" '(comment-line :wk "comment lines"))
-
-  ;; buffer keybinds
-  (nj/leader-keys
-    "b" '(:ignore t :wk "buffer")
-    "b b" '(counsel-switch-buffer :wk "switch to buffer")
-    "b i" '(ibuffer :wk "ibuffer")
-    "b k" '(kill-this-buffer :wk "kill buffer")
-    "b n" '(next-buffer :wk "next buffer")
-    "b p" '(previous-buffer :wk "previous buffer")
-    "b r" '(revert-buffer :wk "reload buffer"))
-
-  ;; help keybinds  
-  (nj/leader-keys
-    "h" '(:ignore t :wk "help")
-    "h l" '(:ignore t :wk "load")
-    "h f" '(describe-function :wk "describe function")
-    "h v" '(describe-variable :wk "describe variable")
-    "h l c" '(reload-init-file :wk "load emacs config")
-    "h l t" '(load-theme :wk "load theme")
-    "h k" '(:ignore :wk "kill")
-    "h k k" '(kill-emacs :wk "kill emacs")
-    "h r" '(:ignore :wk "reload")
-    "h r r" '((lambda () (interactive)
-              (load-file "~/.config/emacs/init.el")
-              (ignore (eplaca-process-queues))
-              :wk "reload emacs config")))
-
-  ;; toggle keybinds
-  (nj/leader-keys
-    "t" '(:ignore t :wk "toggle")
-    "t v" '(vterm-toggle :wk "toggle vterm")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines")
-    "t n" '(neotree-toggle :wk "Toggle neotree file viewer"))
-
-  ;; window keybinds
-  (nj/leader-keys
-    "w" '(:ignore t :wk "windows")
-    ;; splits
-    "w c" '(evil-window-delete :wk "close window")
-    "w n" '(evil-window-new :wk "new window")
-    "w s" '(evil-window-split :wk "split window")
-    "w v" '(evil-window-vsplit :wk "split window vertical")
-    ;; move
-    "w j" '(evil-window-up :wk "window up")
-    "w k" '(evil-window-down :wk "window down")
-    "w h" '(evil-window-left :wk "window left")
-    "w l" '(evil-window-right :wk "window right")
-    "w <up>" '(evil-window-up :wk "window up")
-    "w <down>" '(evil-window-down :wk "window down")
-    "w <left>" '(evil-window-left :wk "window left")
-    "w <right>" '(evil-window-right :wk "window right")
-    "w >" '(evil-window-next :wk "window next")
-    ;; swaps
-    "w C-j" '(buf-move-up :wk "window swap up")
-    "w C-k" '(buf-move-down :wk "window swap down")
-    "w C-h" '(buf-move-left :wk "window swap left")
-    "w C-l" '(buf-move-right :wk "window swap right")
-    "w C-<up>" '(buf-move-up :wk "window swap up")
-    "w C-<down>" '(buf-move-down :wk "window swap down")
-    "w C-<left>" '(buf-move-left :wk "window swap left")
-    "w C-<right>" '(buf-move-right :wk "window swap right"))
-
-  ;; server
-  (nj/leader-keys
-    "s" '(:ignore t :wk "server/sudo")
-    "s k" '(server-force-delete :wk "kill server")
-    "s s" '(server-start :wk "start server")
-    "s t" '(server-mode :wk "server toggle"))
-
-  ;; bookmarks
-  (nj/leader-keys
-    "m" '(:ignore t :wk "bookmarks")
-    "m d" '(bookmark-delete :wk "delete bookmark")
-    "m l" '(bookmark-bmenu-list :wk "bookmark list")
-    "m m" '(bookmark-set :wk "add bookmark")
-    "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark")))
-
-(use-package which-key
-  :diminish
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-idle-delay 0.8
-      which-key-allow-imprecise-window-fit nil))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 (use-package hydra)
 
-(require 'recentf)
-(recentf-mode 1)
-(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-(add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
-(add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
-(add-hook 'kill-emacs-hook 'recentf-save-list)
+(use-package recentf
+  :config
+  (recentf-mode))
 
 (use-package sudo-edit
   :config
   (nj/leader-keys
+    "s" '(:ignore t :wk "sudo")
     "s /" '(sudo-edit-find-file :wk "sudo find file")
     "s ." '(sudo-edit :wk "sudo edit current file")))
 
@@ -245,21 +187,16 @@
   (setq initial-buffer-choice 'dashboard-open)
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
-  (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
-  (setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-  (setq dashboard-center-content nil) ;; set to 't' for centered content
+  (setq dashboard-center-content t) 
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-items '((recents . 8)
-                          (agenda . 5 )
-                          (bookmarks . 5)
-                          (projects . 5)
-                          (registers . 5)))
+                          (agenda . 6)
+                          (bookmarks . 6)
+                          (projects . 8)))
   :custom
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book")))
   :config
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
   (dashboard-setup-startup-hook))
 
 (use-package doom-modeline
@@ -314,6 +251,9 @@
 ;; relative line numbering
 (setq display-line-numbers-type 'relative)
 
+;; visual line mode
+(visual-line-mode t)
+
 ;; zoom on scroll
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -321,7 +261,18 @@
 (use-package ellama
   :init
   (setopt ellama-keymap-prefix "C-c e")
-  (require 'llm-ollama))
+  (require 'llm-ollama)
+  :config
+  (setq ellama-session-auto-save nil)
+  (nj/leader-keys
+    "e" '(:ignore t :wk "ellama")
+    "e c" '(:ignore t :wk "code")
+    "e c a" '(ellama-code-add :wk "ellama add code")
+    "e c c" '(ellama-code-complete :wk "ellama code complete")
+    "e c r" '(ellama-code-review :wk "ellama code review")
+    "e c r" '(ellama-code-edit :wk "ellama code edit")
+    "e C" '(ellama-complete :wk "ellama complete")
+    "e e" '(ellama-chat :wk "ellama chat")))
 
 (use-package lsp-mode
   :ensure t
@@ -406,21 +357,12 @@
   (progn
     (setq treemacs-width 28)
     (treemacs-follow-mode t)
+    (treemacs-project-follow-mode t)
     (treemacs-filewatch-mode t)
-    (when treemacs-python-executable
-      (treemacs-git-commit-diff-mode t))
-
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple)))
-
     (treemacs-hide-gitignored-files-mode nil))
   :bind
   (:map global-map
-        ("M-0"       . treemacs-select-window)
+        ("M-`"       . treemacs-select-window)
         ("C-x t 1"   . treemacs-delete-other-windows)
         ("C-x t t"   . treemacs)
         ("C-x t d"   . treemacs-select-directory)
@@ -443,6 +385,12 @@
 (use-package treemacs-all-the-icons
   :after (treemacs all-the-icons)
   :config (treemacs-load-theme "all-the-icons"))
+
+(use-package treemacs-tab-bar
+  :after (treemacs)
+  :config (treemacs-set-scope-type 'Tabs))
+
+(electric-pair-mode 1)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))

@@ -5,37 +5,6 @@
 #+AUTO_TANGLE: t
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el 
 
-* Table of Contents :toc:
-- [[#core][Core]]
-  - [[#package-management][Package Management]]
-  - [[#recovery-clutter][Recovery Clutter]]
-  - [[#evil][eVil]]
-  - [[#ivycounsel][Ivy/Counsel]]
-  - [[#helpful][Helpful]]
-  - [[#company][Company]]
-  - [[#general][General]]
-  - [[#which-key][Which-Key]]
-  - [[#hydra][Hydra]]
-  - [[#recentf][Recentf]]
-  - [[#sudo-edit][Sudo Edit]]
-- [[#gui][GUI]]
-  - [[#all-the-icons][All The Icons]]
-  - [[#dashboard][Dashboard]]
-  - [[#doom-modeline][Doom Modeline]]
-  - [[#doom-themes][Doom Themes]]
-  - [[#font-config][Font Config]]
-  - [[#tweaks][Tweaks]]
-- [[#development][Development]]
-  - [[#ai-integration][Ai Integration]]
-  - [[#languages][Languages]]
-  - [[#project-management][Project Management]]
-  - [[#tweaks-1][Tweaks]]
-- [[#org][Org]]
-  - [[#auto-tangle][Auto Tangle]]
-  - [[#enabling-bullets][Enabling Bullets]]
-  - [[#enabling-toc][Enabling ToC]]
-  - [[#org-roam][Org Roam]]
-
 * Core
 
 ** Package Management
@@ -64,35 +33,90 @@ Set use-package to use straight be default as well to keep use-package usage con
 #+end_src
 
 
-** Recovery Clutter
-Set default Emacs backup directory - temp directory
-Otherwise by defualt emacs will save backup files to the directory the original file is located in, which creates a mess for git.
-#+begin_src emacs-lisp
-  (setq backup-directory-alist
-        `((".*" . ,temporary-file-directory)))
-  (setq auto-save-file-name-transforms
-        `((".*" ,temporary-file-directory t)))
-#+end_src
-
-
 ** eVil
 Vi emulation layer. Adds vim emulation to emacs in all programming and text editing buffers. Evil collection is a collection of keybind packages designed to integrate vim keybinds into popular emacs packages such as magit.
 #+begin_src emacs-lisp
-  (use-package evil
-    :hook ((prog-mode text-mode) . display-line-numbers-mode)
-    :init
-    (setq evil-want-integration t
-        evil-want-keybinding nil
-        evil-want-C-i-jump nil
-        evil-respect-visual-line-mode t
-        evil-want-Y-yank-to-eol t)
-    (evil-mode))
+    (use-package evil
+      :hook ((prog-mode text-mode) . display-line-numbers-mode)
+      :init
+      (setq evil-want-integration t
+          evil-want-keybinding nil
+          evil-want-C-i-jump nil
+          evil-respect-visual-line-mode t
+          evil-want-Y-yank-to-eol t)
+      (evil-mode)
+      :config
+    (global-set-key (kbd "C-<tab>") 'evil-window-next)
+    (global-set-key (kbd "M-<tab>") 'evil-buffer))
 
-  ;; Keybind collection for evil
-  (use-package evil-collection
-    :after evil
+    ;; Keybind collection for evil
+    (use-package evil-collection
+      :after evil
+      :config
+      (evil-collection-init))
+#+end_src
+
+
+** Keybinds
+
+*** General
+Keybind defenitions using general.el
+#+begin_src emacs-lisp
+  (use-package general
     :config
-    (evil-collection-init))
+    (general-evil-setup)
+
+    (general-define-key
+     "C-=" 'text-scale-increase
+     "C--" 'text-scale-decrease)
+
+    ;; leader key definer
+    (general-create-definer nj/leader-keys
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "C-SPC") ;; non evil buffers
+
+    ;; nav and command keybinds
+    (nj/leader-keys
+      "x" '(counsel-M-x :wk "command")
+      "/" '(find-file :wk "goto file")
+      ">" '(:ignore t :wk "goto")
+      "> r" '(counsel-recentf :wk "goto recent file")
+      "> m" '(counsel-bookmark :wk "goto bookmark")
+      "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
+      "TAB TAB" '(comment-line :wk "comment lines"))
+
+    ;; buffer keybinds
+    (nj/leader-keys
+      "b" '(:ignore t :wk "buffer")
+      "b b" '(counsel-switch-buffer :wk "switch to buffer")
+      "b i" '(ibuffer :wk "ibuffer")
+      "b k" '(kill-this-buffer :wk "kill buffer")
+      "b n" '(next-buffer :wk "next buffer")
+      "b p" '(previous-buffer :wk "previous buffer")
+      "b r" '(revert-buffer :wk "reload buffer"))
+
+    ;; bookmarks
+    (nj/leader-keys
+      "m" '(:ignore t :wk "bookmarks")
+      "m d" '(bookmark-delete :wk "delete bookmark")
+      "m l" '(bookmark-bmenu-list :wk "bookmark list")
+      "m m" '(bookmark-set :wk "add bookmark")
+      "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark")))
+#+end_src
+
+
+*** Which-Key
+Display tooltips on slow keybind inputs
+#+begin_src emacs-lisp
+    (use-package which-key
+      :diminish
+      :init
+      (which-key-mode 1)
+      :config
+      (setq which-key-idle-delay 0.8
+  	  which-key-allow-imprecise-window-fit nil))
 #+end_src
 
 
@@ -138,6 +162,7 @@ Rich completion frontend with all-the-icons support. Uses counsel as well.
     :init (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
 #+end_src
 
+
 ** Helpful
 This package extends the default help functionality in emacs to be more intuitive and presentable.
 #+begin_src emacs-lisp
@@ -149,7 +174,12 @@ This package extends the default help functionality in emacs to be more intuitiv
     ([remap describe-function] . counsel-describe-function)
     ([remap describe-command] . helpful-command)
     ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+    ([remap describe-key] . helpful-key)
+    :config
+    (nj/leader-keys
+      "h" '(:ignore t :wk "help")
+      "h f" '(describe-function :wk "describe function")
+      "h v" '(describe-variable :wk "describe variable")))
 #+end_src
 
 
@@ -174,128 +204,14 @@ Auto-completion backend, used in tandem with many development packages
 #+end_src
 
 
-** General
-Keybind defenitions using general.el
+** Recovery Clutter
+Set default Emacs backup directory - temp directory
+Otherwise by defualt emacs will save backup files to the directory the original file is located in, which creates a mess for git.
 #+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-evil-setup)
-
-    (general-define-key
-     "C-=" 'text-scale-increase
-     "C--" 'text-scale-decrease)
-
-    ;; fast arrow scrolling
-    (general-def 'normal
-      "C-<up>" 'evil-backwards-paragraph
-      "C-<down>" 'evil-forwards-paragraph
-      "C-<right>" 'evil-end-of-line
-      "C-<left>" 'back-to-indentation)
-
-    (general-create-definer nj/leader-keys
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix "SPC"
-      :global-prefix "C-SPC")
-
-    ;; nav and command keybinds
-    (nj/leader-keys
-      "x" '(counsel-M-x :wk "command")
-      "/" '(find-file :wk "goto file")
-      ">" '(:ignore :wk "goto")
-      "> r" '(counsel-recentf :wk "goto recent file")
-      "> m" '(counsel-bookmark :wk "goto bookmark")
-      "> c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "goto emacs config")
-      "TAB TAB" '(comment-line :wk "comment lines"))
-
-    ;; buffer keybinds
-    (nj/leader-keys
-      "b" '(:ignore t :wk "buffer")
-      "b b" '(counsel-switch-buffer :wk "switch to buffer")
-      "b i" '(ibuffer :wk "ibuffer")
-      "b k" '(kill-this-buffer :wk "kill buffer")
-      "b n" '(next-buffer :wk "next buffer")
-      "b p" '(previous-buffer :wk "previous buffer")
-      "b r" '(revert-buffer :wk "reload buffer"))
-
-    ;; help keybinds  
-    (nj/leader-keys
-      "h" '(:ignore t :wk "help")
-      "h l" '(:ignore t :wk "load")
-      "h f" '(describe-function :wk "describe function")
-      "h v" '(describe-variable :wk "describe variable")
-      "h l c" '(reload-init-file :wk "load emacs config")
-      "h l t" '(load-theme :wk "load theme")
-      "h k" '(:ignore :wk "kill")
-      "h k k" '(kill-emacs :wk "kill emacs")
-      "h r" '(:ignore :wk "reload")
-      "h r r" '((lambda () (interactive)
-                (load-file "~/.config/emacs/init.el")
-                (ignore (eplaca-process-queues))
-                :wk "reload emacs config")))
-
-    ;; toggle keybinds
-    (nj/leader-keys
-      "t" '(:ignore t :wk "toggle")
-      "t v" '(vterm-toggle :wk "toggle vterm")
-      "t t" '(visual-line-mode :wk "Toggle truncated lines")
-      "t n" '(neotree-toggle :wk "Toggle neotree file viewer"))
-
-    ;; window keybinds
-    (nj/leader-keys
-      "w" '(:ignore t :wk "windows")
-      ;; splits
-      "w c" '(evil-window-delete :wk "close window")
-      "w n" '(evil-window-new :wk "new window")
-      "w s" '(evil-window-split :wk "split window")
-      "w v" '(evil-window-vsplit :wk "split window vertical")
-      ;; move
-      "w j" '(evil-window-up :wk "window up")
-      "w k" '(evil-window-down :wk "window down")
-      "w h" '(evil-window-left :wk "window left")
-      "w l" '(evil-window-right :wk "window right")
-      "w <up>" '(evil-window-up :wk "window up")
-      "w <down>" '(evil-window-down :wk "window down")
-      "w <left>" '(evil-window-left :wk "window left")
-      "w <right>" '(evil-window-right :wk "window right")
-      "w >" '(evil-window-next :wk "window next")
-      ;; swaps
-      "w C-j" '(buf-move-up :wk "window swap up")
-      "w C-k" '(buf-move-down :wk "window swap down")
-      "w C-h" '(buf-move-left :wk "window swap left")
-      "w C-l" '(buf-move-right :wk "window swap right")
-      "w C-<up>" '(buf-move-up :wk "window swap up")
-      "w C-<down>" '(buf-move-down :wk "window swap down")
-      "w C-<left>" '(buf-move-left :wk "window swap left")
-      "w C-<right>" '(buf-move-right :wk "window swap right"))
-
-    ;; server
-    (nj/leader-keys
-      "s" '(:ignore t :wk "server/sudo")
-      "s k" '(server-force-delete :wk "kill server")
-      "s s" '(server-start :wk "start server")
-      "s t" '(server-mode :wk "server toggle"))
-
-    ;; bookmarks
-    (nj/leader-keys
-      "m" '(:ignore t :wk "bookmarks")
-      "m d" '(bookmark-delete :wk "delete bookmark")
-      "m l" '(bookmark-bmenu-list :wk "bookmark list")
-      "m m" '(bookmark-set :wk "add bookmark")
-      "m M" '(bookmark-set-no-overwrite :wk "add permanent bookmark")))
-#+end_src
-
-
-** Which-Key
-Display tooltips on slow keybind inputs
-#+begin_src emacs-lisp
-    (use-package which-key
-      :diminish
-      :init
-      (which-key-mode 1)
-      :config
-      (setq which-key-idle-delay 0.8
-  	  which-key-allow-imprecise-window-fit nil))
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
 #+end_src
 
 
@@ -309,30 +225,28 @@ Allows for fast minibuffer based one time keybinds
 ** Recentf
 Recent file list - add exclusions here
 #+begin_src emacs-lisp
-  (require 'recentf)
-  (recentf-mode 1)
-  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-  (add-to-list 'recentf-exclude "~/.config/emacs/.cache/treemacs-persist")
-  (add-to-list 'recentf-exclude "~/dotfiles/emacs/.cache/treemacs-persist")
-  (add-hook 'kill-emacs-hook 'recentf-save-list)
+  (use-package recentf
+    :config
+    (recentf-mode))
 #+end_src
 
 
 ** Sudo Edit
-Allow for buffers to be written to using sudo
+Edit buffers using sudo privileges
 #+begin_src emacs-lisp
   (use-package sudo-edit
     :config
     (nj/leader-keys
+      "s" '(:ignore t :wk "sudo")
       "s /" '(sudo-edit-find-file :wk "sudo find file")
       "s ." '(sudo-edit :wk "sudo edit current file")))
 #+end_src
 
 
-* GUI
+* Rice
 
 ** All The Icons
-Icon Support
+Icon Support - utilized heavily by other packages
 #+begin_src emacs-lisp
   (use-package all-the-icons
     :ensure t
@@ -342,8 +256,9 @@ Icon Support
 #+end_src
 
 
+
 ** Dashboard
-Emacs dahboard/launcher page
+Launch page, syncs with recentf, bookmarks, and projectile
 #+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
@@ -351,21 +266,16 @@ Emacs dahboard/launcher page
     (setq initial-buffer-choice 'dashboard-open)
     (setq dashboard-set-heading-icons t)
     (setq dashboard-set-file-icons t)
-    (setq dashboard-banner-logo-title "Emacs Is More Than A Text Editor!")
-    (setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-    (setq dashboard-center-content nil) ;; set to 't' for centered content
+    (setq dashboard-center-content t) 
     (setq dashboard-projects-backend 'projectile)
     (setq dashboard-items '((recents . 8)
-                            (agenda . 5 )
-                            (bookmarks . 5)
-                            (projects . 5)
-                            (registers . 5)))
+                            (agenda . 6)
+                            (bookmarks . 6)
+                            (projects . 8)))
     :custom
     (dashboard-modify-heading-icons '((recents . "file-text")
                                       (bookmarks . "book")))
     :config
-    (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-    (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
     (dashboard-setup-startup-hook))
 #+end_src
 
@@ -378,6 +288,7 @@ Better looking modeline from doom emacs
     :init (doom-modeline-mode 1)) 
   (use-package diminish) ;; Adds ability to diminish modes from modeline
 #+end_src
+
 
 
 ** Doom Themes
@@ -398,6 +309,7 @@ https://mswift42.github.io/themecreator/
   ;; Transparency
   ;; (add-to-list 'default-frame-alist '(alpha-background . 90))
 #+end_src
+
 
 
 ** Font Config
@@ -430,6 +342,7 @@ General UI Font Config
 #+end_src
 
 
+
 ** Tweaks
 Various GUI tweaks and settings
 #+begin_src emacs-lisp
@@ -445,6 +358,9 @@ Various GUI tweaks and settings
   ;; relative line numbering
   (setq display-line-numbers-type 'relative)
 
+  ;; visual line mode
+  (visual-line-mode t)
+
   ;; zoom on scroll
   (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
   (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -454,18 +370,29 @@ Various GUI tweaks and settings
 * Development
 
 ** Ai Integration
-Ollama using Ellama
+Ollama using Ellama - Investigate how to cancel as it is quite annoying when it rambles on
 #+begin_src emacs-lisp
-  (use-package ellama
-    :init
-    (setopt ellama-keymap-prefix "C-c e")
-    (require 'llm-ollama))
+    (use-package ellama
+      :init
+      (setopt ellama-keymap-prefix "C-c e")
+      (require 'llm-ollama)
+      :config
+      (setq ellama-session-auto-save nil)
+      (nj/leader-keys
+        "e" '(:ignore t :wk "ellama")
+        "e c" '(:ignore t :wk "code")
+        "e c a" '(ellama-code-add :wk "ellama add code")
+        "e c c" '(ellama-code-complete :wk "ellama code complete")
+        "e c r" '(ellama-code-review :wk "ellama code review")
+        "e c r" '(ellama-code-edit :wk "ellama code edit")
+        "e C" '(ellama-complete :wk "ellama complete")
+        "e e" '(ellama-chat :wk "ellama chat")))
 #+end_src
 
 
 ** Languages
 
-*** Language Server
+*** LSP
 LSP Mode provides a client hook for communicating with language server protocol
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -488,12 +415,14 @@ LSP Mode provides a client hook for communicating with language server protocol
   ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 #+end_src
 
+
 *** Rust
 #+begin_src emacs-lisp
   (use-package rust-mode
     :mode "\\.rs\\'")
     
 #+end_src
+
 
 *** Nix
 #+begin_src emacs-lisp
@@ -507,6 +436,7 @@ LSP Mode provides a client hook for communicating with language server protocol
   ;;   :custom
   ;; (lsp-nix-nil-formatter ["nixpgs-fmt"]))
 #+end_src
+
 
 *** TypeScript
 #+begin_src emacs-lisp
@@ -540,9 +470,11 @@ LSP Mode provides a client hook for communicating with language server protocol
 #+end_src
 
 
+
 ** Project Management
 
 *** Magit
+Git management mode for emacs
 #+begin_src emacs-lisp
   (use-package magit
     :config
@@ -551,7 +483,7 @@ LSP Mode provides a client hook for communicating with language server protocol
       "g s" '(magit-status :wk "magit status")))
 #+end_src
 
-**** Git Time Machine
+**** Git Time Machine - Disabled
 Allows for easy review of past commits
 +begin_src emacs-lisp
 (use-package git-timemachine
@@ -562,6 +494,7 @@ Allows for easy review of past commits
     (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision)
 )
 +end_src
+
 
 *** Projectile
 Project management for emacs - could be argued core
@@ -575,7 +508,8 @@ Project management for emacs - could be argued core
   #+end_src
 
 
-*** Treemacs
+** Treemacs
+Folder tree/hierarchary viewer for projects
 #+begin_src emacs-lisp
   (use-package treemacs
     :defer t
@@ -587,21 +521,12 @@ Project management for emacs - could be argued core
     (progn
       (setq treemacs-width 28)
       (treemacs-follow-mode t)
+      (treemacs-project-follow-mode t)
       (treemacs-filewatch-mode t)
-      (when treemacs-python-executable
-        (treemacs-git-commit-diff-mode t))
-
-      (pcase (cons (not (null (executable-find "git")))
-                   (not (null treemacs-python-executable)))
-        (`(t . t)
-         (treemacs-git-mode 'deferred))
-        (`(t . _)
-         (treemacs-git-mode 'simple)))
-
       (treemacs-hide-gitignored-files-mode nil))
     :bind
     (:map global-map
-          ("M-0"       . treemacs-select-window)
+          ("M-`"       . treemacs-select-window)
           ("C-x t 1"   . treemacs-delete-other-windows)
           ("C-x t t"   . treemacs)
           ("C-x t d"   . treemacs-select-directory)
@@ -624,10 +549,21 @@ Project management for emacs - could be argued core
   (use-package treemacs-all-the-icons
     :after (treemacs all-the-icons)
     :config (treemacs-load-theme "all-the-icons"))
+
+  (use-package treemacs-tab-bar
+    :after (treemacs)
+    :config (treemacs-set-scope-type 'Tabs))
 #+end_src
 
 
+
 ** Tweaks
+
+*** Misc
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+#+end_src
+
 
 *** Rainbow Delimiters
 Applies rainbow effect to delimiters and groups to sort out nesting errors
@@ -637,6 +573,7 @@ Applies rainbow effect to delimiters and groups to sort out nesting errors
 
 #+end_src
 
+
 *** Rainbow Mode
 Render colors as a color, i.e. #ffa500
 #+begin_src emacs-lisp
@@ -645,6 +582,7 @@ Render colors as a color, i.e. #ffa500
     :hook 
     ((org-mode prog-mode) . rainbow-mode))
 #+end_src
+
 
 *** Vterm
 Terminal emulator for emacs - requires c compilation to install so it is pre-installed via nix
@@ -661,6 +599,7 @@ Terminal emulator for emacs - requires c compilation to install so it is pre-ins
 
 
 * Org
+The ever-powerful...
 #+begin_src emacs-lisp
   (use-package org
     :hook (org-mode . org-indent-mode)
@@ -689,6 +628,7 @@ To enable auto-tangling for a given file, set the auto_tangle header to true.
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
+
 ** Enabling Bullets
 This package enable UTF-8 bullets to org, looks a lot nicer than default *.
 #+begin_src emacs-lisp
@@ -698,6 +638,7 @@ This package enable UTF-8 bullets to org, looks a lot nicer than default *.
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 
+
 ** Enabling ToC
 Allows for auto-generated Table of Contents in Org Mode buffers. Add headline with :toc: flag.
 #+begin_src emacs-lisp
@@ -706,7 +647,7 @@ Allows for auto-generated Table of Contents in Org Mode buffers. Add headline wi
 #+end_src
 
 
-** Org Roam
+** Org Roam - Disabled
 Non-heirarchical node-based note manger
 Disabled
 
@@ -719,3 +660,5 @@ Disabled
 
 
 
+  
+  
